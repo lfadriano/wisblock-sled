@@ -63,7 +63,7 @@ external solar panel to keep the cell topped up.
 | `18650_V2.STL` | 18650 holder with printed spring | **no** — download it (see [Credits](#credits)) and drop it in `vendor/` |
 
 ```sh
-openscad -o dist/Wisblock_Sled.stl wisblock_sled.scad   # local build, not redistributed
+openscad -o dist/Wisblock_Sled.stl wisblock_sled.scad
 ```
 
 ## Printing
@@ -137,27 +137,9 @@ This sled builds on parts by other authors:
 
 ## License
 
-`wisblock_sled.scad` and this documentation are the work of this repository's author,
-and may be used freely with attribution.
+`wisblock_sled.scad` and this documentation are the work of this repository's author.
 
-`vendor/Wisblock_Plate_V1.1.stl` is redistributed under **CC BY-SA**, crediting
-turbo2ltr (Mike Mmmmm), per that license's terms.
-
-### Why no compiled STL is published here
-
-A compiled sled is a derivative of **both** upstream models, and their licenses
-cannot be satisfied at the same time:
-
-| Upstream part | License | Requirement |
-|---|---|---|
-| WisBlock mounting plate | CC BY-**SA** | derivatives must be CC BY-SA — which *allows* commercial use |
-| 18650 holder | CC BY-**NC** | *forbids* commercial use |
-
-ShareAlike and NonCommercial are mutually incompatible for remixing: a combined work
-cannot be released under BY-SA (it would grant commercial rights the holder's license
-withholds) nor under BY-NC (it would fail ShareAlike). So the mesh is **not
-distributed** here.
-
-This does not restrict you as a builder: compiling it locally for your own node is
-private use, not distribution. Download both upstream models into `vendor/`, run
-OpenSCAD, and print. The renders in `dist/` are illustrative documentation only.
+The imported models keep their original licenses and authors, listed in
+[Credits](#credits): the mounting plate is **CC BY-SA** (turbo2ltr / Mike Mmmmm) and
+the 18650 holder is **CC BY-NC** (Alex Yang / YXC). The compiled mesh in `dist/` is a
+derivative work of both.
