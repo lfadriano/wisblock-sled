@@ -1,0 +1,9 @@
+# Modelos de TERCEIROS: nao redistribuidos aqui (ver README).
+# Baixe-os e coloque nesta pasta para compilar.
+vendor/*.stl
+vendor/*.STL
+
+# arquivos de trabalho do OpenSCAD
+*.csg
+.*.scad
+_*.scad
