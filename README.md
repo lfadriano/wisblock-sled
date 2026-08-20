@@ -63,7 +63,7 @@ external solar panel to keep the cell topped up.
 | `18650_V2.STL` | 18650 holder with printed spring | **no** — download it (see [Credits](#credits)) and drop it in `vendor/` |
 
 ```sh
-openscad -o dist/Wisblock_Sled.stl wisblock_sled.scad
+openscad -o dist/Wisblock_Sled.stl wisblock_sled.scad   # local build, not redistributed
 ```
 
 ## Printing
@@ -126,7 +126,10 @@ This sled builds on parts by other authors:
   **Alex Yang (YXC)**, licensed **CC BY-NC**. Not redistributed here; download it
   from [thingiverse.com/thing:2668159](https://www.thingiverse.com/thing:2668159)
   and drop it in `vendor/`.
-- **WisBlock mounting plate** (`Wisblock_Plate_V1.1.stl`) — included in `vendor/`.
+- **WisBlock mounting plate** (`Wisblock_Plate_V1.1.stl`) by **turbo2ltr
+  (Mike Mmmmm)**, licensed **CC BY-SA**. Redistributed in `vendor/` under those same
+  terms; source:
+  [thingiverse.com/thing:6647288](https://www.thingiverse.com/thing:6647288).
 - **RAK19007 WisBlock Base Board 2nd Gen** — the board's own 3D model, published by
   the manufacturer on the
   [RAK Wireless store page](https://store.rakwireless.com/products/rak19007-wisblock-base-board-2nd-gen),
@@ -134,9 +137,27 @@ This sled builds on parts by other authors:
 
 ## License
 
-`wisblock_sled.scad` and this documentation are the work of this repository's author.
+`wisblock_sled.scad` and this documentation are the work of this repository's author,
+and may be used freely with attribution.
 
-**The compiled STL in `dist/` is a derivative work of a CC BY-NC model**, so it
-inherits that restriction: attribution to Alex Yang (YXC) and **non-commercial use
-only**. CC BY-NC does permit derivatives, which is why the compiled file can be
-shared here at all — but it may not be sold or used in a commercial product.
+`vendor/Wisblock_Plate_V1.1.stl` is redistributed under **CC BY-SA**, crediting
+turbo2ltr (Mike Mmmmm), per that license's terms.
+
+### Why no compiled STL is published here
+
+A compiled sled is a derivative of **both** upstream models, and their licenses
+cannot be satisfied at the same time:
+
+| Upstream part | License | Requirement |
+|---|---|---|
+| WisBlock mounting plate | CC BY-**SA** | derivatives must be CC BY-SA — which *allows* commercial use |
+| 18650 holder | CC BY-**NC** | *forbids* commercial use |
+
+ShareAlike and NonCommercial are mutually incompatible for remixing: a combined work
+cannot be released under BY-SA (it would grant commercial rights the holder's license
+withholds) nor under BY-NC (it would fail ShareAlike). So the mesh is **not
+distributed** here.
+
+This does not restrict you as a builder: compiling it locally for your own node is
+private use, not distribution. Download both upstream models into `vendor/`, run
+OpenSCAD, and print. The renders in `dist/` are illustrative documentation only.

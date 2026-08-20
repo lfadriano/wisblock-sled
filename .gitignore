@@ -6,3 +6,7 @@ vendor/18650_V2.STL
 *.csg
 .*.scad
 _*.scad
+
+# Compiled mesh: derivative of CC BY-SA + CC BY-NC upstreams, whose terms
+# cannot both be satisfied. Build it locally instead (private use is fine).
+dist/*.stl
