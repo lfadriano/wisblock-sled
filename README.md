@@ -37,6 +37,11 @@ spring prints supported instead of bridging.
 
 Tested in PLA.
 
+### Battery contacts
+
+The 18650 holder takes its electrical contacts from **brass standoffs**, per its
+author: `M3x6+6 (20A)` or `M4x6+6 (30A)`. They are not part of the printed model.
+
 ## Key parameters
 
 | Parameter | Value | Notes |
@@ -68,8 +73,10 @@ Tested in PLA.
 
 This sled builds on two models by other authors, which keep their original licenses:
 
-- **18650 holder with printed spring** (`18650_V2.STL`) — not redistributed here.
-  Source: <!-- paste the original link here -->
+- **18650 battery holder with printed spring** (`18650_V2.STL`) by **Alex Yang (YXC)** —
+  not redistributed here. Download it from
+  [thingiverse.com/thing:2668159](https://www.thingiverse.com/thing:2668159) and drop
+  it in `vendor/`.
 - **WisBlock mounting plate** (`Wisblock_Plate_V1.1.stl`) — included in `vendor/`.
 
 ## License
