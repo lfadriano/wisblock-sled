@@ -5,7 +5,7 @@ repeater node, designed for continuous, autonomous outdoor operation under sever
 weather. A 3D-printed internal sled slides into a hermetically sealed PVC pipe,
 giving IP68 protection against rain and heat without compromising RF efficiency.
 
-![the sled](dist/iso.png)
+![the sled](dist/wisblock_sled.png)
 
 ## 🛠️ Hardware
 
@@ -31,6 +31,9 @@ custom internal chassis, printed as a single piece.
   cutout in the plate.
 - **Antenna end:** a Ø34.4 mm circular flange closes the tube, with a hex recess
   (8.41 mm across flats) that keys the panel-mount SMA female connector.
+- **Board mounting:** the four M2 holes stand the board off the base, leaving the
+  gap free for the wiring that runs underneath it — 5.0 mm is the spacing commonly
+  used in hermetic enclosures.
 
 The model is parametric OpenSCAD and **does not redraw** the third-party parts: it
 imports the original STLs and unions/cuts around them, so holes, standoffs and the
