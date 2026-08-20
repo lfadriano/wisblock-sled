@@ -62,6 +62,12 @@ x_end     = x_hold_e + tail_len;    // 170.5  fim da placa e das asas
 // Nao ha piso sob o holder -> nada de suporte e a mola trabalha livre.
 h_base_z  = 0.0;
 h_inset   = 0.20;   // recorte 0,2 mm menor que o holder em cada face (solda no CSG)
+// O holder afina nas pontas, entao um recorte retangular deixaria duas lacunas
+// triangulares na extremidade da antena (6,4 mm de profundidade, fechando por
+// volta de x=102). O canto do recorte e' chanfrado para a placa preencher isso.
+// So na extremidade da antena: na outra ponta, preencher invadiria a celula.
+pk_cx     = 8.0;
+pk_cy     = 6.5;
 
 // ============ FLANGE DA ANTENA (SMA) ============
 ant_len     = 30.0;              // comprimento adicionado nesta extremidade
@@ -135,6 +141,8 @@ echo(str("no STL (+",-x_start,"): passagem ESQ x=",cab_L_x-x_start,"  DIR x=",ca
 echo(str("bracadeiras no STL: superior x=",tie_top_x-x_start," y=",yc-tie_top_dy," e ",yc+tie_top_dy));
 echo(str("bracadeiras no STL: inferior x=",tie_bot_x-x_start," y=",yc-tie_bot_dy," e ",yc+tie_bot_dy));
 echo(str("2o par superior no STL: x=",tie_top_x+tie_top2_off-x_start));
+echo(str("furo O2.54 movido: STL x ",63.12-x_start," -> ",63.12-hole_move-x_start));
+echo(str("chanfro do recorte: ",pk_cx," x ",pk_cy," mm na extremidade da antena"));
 echo(str("furos da bateria no STL: x=",holder_x0+tie_bat_frac[0]*h_len-x_start,
          " e ",holder_x0+tie_bat_frac[1]*h_len-x_start,
          "   y=",yc-tie_bat_dy," e ",yc+tie_bat_dy));
@@ -234,9 +242,13 @@ module plate_ext_right()
 // 3,18 mm de espessura da placa. Base do holder = base da placa (z=0),
 // entao ele assenta no leito e a mola imprime apoiada: SEM SUPORTE.
 // (o recorte tambem remove o pino Ø5,13 que existia em x=89,55)
-module holder_pocket()
-    translate([holder_x0+h_inset, hy0+h_inset, -5])
-        cube([h_len-2*h_inset, h_w-2*h_inset, 50]);
+module holder_pocket(){
+    x0 = holder_x0+h_inset;  x1 = holder_x0+h_len-h_inset;
+    ya = hy0+h_inset;        yb = hy1-h_inset;
+    translate([0,0,-5]) linear_extrude(50)
+        polygon([[x0+pk_cx, ya], [x1, ya], [x1, yb],
+                 [x0+pk_cx, yb], [x0, yb-pk_cy], [x0, ya+pk_cy]]);
+}
 
 module holder()
     translate([holder_x0, yc + h_w/2, h_base_z - h_y0])
@@ -278,9 +290,14 @@ module sma_cuts()
 
 // os 4 furos M2 + 2 furos Ø2,54 sao reabertos depois do filete,
 // para que o filete nunca obstrua um parafuso
+hole_move  = 3.0;   // quanto o furo Ø2,54 junto ao holder sobe (rumo a antena)
 plate_holes = [[ 3.81, 4.08, 2.05], [ 3.81,26.08, 2.05],
                [55.81, 4.08, 2.05], [57.81,28.08, 2.05],
-               [13.13,13.40, 2.56], [63.12,13.40, 2.56]];
+               [13.13,13.40, 2.56], [63.12-hole_move, 13.40, 2.56]];
+
+// tampa o furo Ø2,54 original antes de reabri-lo na posicao nova
+module plug_old_hole()
+    translate([63.12, 13.40, -0.01]) cylinder(h=plate_t+0.02, d=2.9, $fn=48);
 module reopen_holes()
     for(h=plate_holes)
         translate([h[0], h[1], -1]) cylinder(h=10, d=h[2], $fn=48);
@@ -358,6 +375,7 @@ union(){
                 holder_pocket();
             }
             // ... e as asas por cima: o filete funde com a parede do holder
+            plug_old_hole();
             wings();
             grip_step();
         }
