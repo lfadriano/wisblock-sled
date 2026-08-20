@@ -1,0 +1,8 @@
+# Third-party model NOT redistributed here (see Credits in README):
+# download it and drop it in vendor/ to build.
+vendor/18650_V2.STL
+
+# OpenSCAD working files
+*.csg
+.*.scad
+_*.scad
