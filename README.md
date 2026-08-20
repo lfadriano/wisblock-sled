@@ -24,9 +24,10 @@ custom internal chassis, printed as a single piece.
 
 - **Size:** **200.5 mm** end to end, **34.62 mm** across the wings — a sliding
   interference fit inside Brazilian 40 mm PVC pipe (34.5 mm ID).
-- **Cable management:** oblong slots take nylon zip ties for loose wiring, and two
-  dedicated side slots route the LoRa and BLE antenna wires safely under the board
-  instead of letting them chafe between the plate and the pipe wall.
+- **Cable management:** five pairs of oblong slots (4.0 × 2.2 mm) take nylon zip
+  ties — two pairs near the antenna end, two flanking the battery, one on the tail —
+  and two dedicated side slots route the LoRa and BLE antenna wires safely under the
+  board instead of letting them chafe between the plate and the pipe wall.
 - **Battery:** an 18650 holder with a print-in-place spring drops into a through
   cutout in the plate.
 - **Antenna end:** a Ø34.4 mm circular flange closes the tube, with a hex recess
@@ -34,6 +35,8 @@ custom internal chassis, printed as a single piece.
 - **Board mounting:** the four M2 holes stand the board off the base, leaving the
   gap free for the wiring that runs underneath it — 5.0 mm is the spacing commonly
   used in hermetic enclosures.
+- **Pull step:** a 3 mm ridge across the tail end gives you something to push or
+  hook against when sliding the sled inside the pipe.
 
 The model is parametric OpenSCAD and **does not redraw** the third-party parts: it
 imports the original STLs and unions/cuts around them, so holes, standoffs and the
@@ -71,8 +74,9 @@ openscad -o dist/Wisblock_Sled.stl wisblock_sled.scad
 
 ## Printing
 
-**Material: PETG, ABS or ASA, 30% infill. Avoid PLA** — it deforms from the heat
-that builds up inside a sealed tube in the sun.
+**Material: PETG, ABS or ASA, 20% infill. Avoid PLA** — it deforms from the heat
+that builds up inside a sealed tube in the sun. 20% is plenty — the part came out
+solidly rigid in PETG at that density.
 
 **Print it flat, on its flat face. Do not print it upright.** The holder's spring
 compresses along the length (X); lying flat, the layers run in the plane of that
@@ -103,6 +107,7 @@ author: `M3x6+6 (20A)` or `M4x6+6 (30A)`. They are not part of the printed model
 | `disc_flat` | `true` | clips the disc at z=0 → flat base, no support needed |
 | `cable_swap` | `true` | swaps which side each cable slot exits on |
 | `tail_len` | `15.0` | tail past the battery, carrying the zip-tie slots |
+| `grip_h` | `3.0` | height of the pull step above the plate |
 
 ## Non-obvious design decisions
 

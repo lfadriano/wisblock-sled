@@ -91,6 +91,19 @@ tie_top_dy = 8.4;    // -> y = 6,49 e 23,29 : entre a asa (3,05) e o recorte (9,
 // par INFERIOR: no prolongamento, 5 mm antes da ponta
 tie_bot_dy = 6.0;    // -> y = 8,89 e 20,89
 tie_bot_back = 5.0;  // recuo a partir do fim da placa
+tie_top2_off = 10.0; // 2o par superior: 10 mm abaixo do primeiro
+// pares para amarrar a BATERIA: ficam na faixa estreita entre a asa e o holder,
+// entao atravessam de proposito a raiz da asa e a parede do trilho. Nessa altura
+// (z 0..3,18) nao ha mola (y>=5,87) nem carro (z>=5,20): o mecanismo nao e' tocado.
+tie_bat_dy   = 11.29; // -> y = 3,60 e 26,18
+tie_bat_frac = [0.34, 0.67];  // posicao ao longo do suporte da bateria
+
+// ============ DEGRAU DE PEGA (borda inferior) ============
+// nervura transversal acima da placa, na ponta oposta a antena: da o apoio
+// para empurrar/puxar o sled dentro do cano.
+grip_len  = 2.5;     // comprimento em X (fica depois dos oblongos inferiores)
+grip_h    = 3.0;     // altura acima da placa
+grip_marg = 3.2;     // recuo em Y, para nao invadir as asas
 
 // ============ PASSAGENS DE CABO (assimetricas) ============
 // medidas ABAIXO dos FUROS SUPERIORES DA PCB (o par M2 em x=3.81),
@@ -99,7 +112,7 @@ cable_w      = 3.5;  // largura da passagem
 cable_into   = 2.0;  // quanto avanca dentro da placa (evita o fio raspar no cano)
 cable_L_off  = 10.0; // cabo da ESQUERDA (y baixo):  10 mm abaixo do furo M2
 cable_R_off  = 20.0; // cabo da DIREITA  (y alto):   20 mm abaixo do furo M2
-cable_swap   = true; // lados invertidos: ESQ recebe 20 mm, DIR recebe 10 mm
+cable_swap   = false;// ESQ recebe 10 mm, DIR recebe 20 mm (abaixo dos furos M2)
 
 $fn = 120;
 
@@ -121,6 +134,12 @@ echo(str("prolongamento: bateria termina em ",x_hold_e,", placa/asas ate ",x_end
 echo(str("no STL (+",-x_start,"): passagem ESQ x=",cab_L_x-x_start,"  DIR x=",cab_R_x-x_start));
 echo(str("bracadeiras no STL: superior x=",tie_top_x-x_start," y=",yc-tie_top_dy," e ",yc+tie_top_dy));
 echo(str("bracadeiras no STL: inferior x=",tie_bot_x-x_start," y=",yc-tie_bot_dy," e ",yc+tie_bot_dy));
+echo(str("2o par superior no STL: x=",tie_top_x+tie_top2_off-x_start));
+echo(str("furos da bateria no STL: x=",holder_x0+tie_bat_frac[0]*h_len-x_start,
+         " e ",holder_x0+tie_bat_frac[1]*h_len-x_start,
+         "   y=",yc-tie_bat_dy," e ",yc+tie_bat_dy));
+echo(str("degrau de pega no STL: x ",x_end-grip_len-x_start," a ",x_end-x_start,
+         "   z ",plate_t," a ",plate_t+grip_h));
 echo(str("recorte do SMA no STL: x ",x_disc1-x_start," a ",x_disc1+relief_len-x_start,
          "   y ",yc-relief_w/2," a ",yc+relief_w/2));
 
@@ -286,9 +305,26 @@ module tie_slot(xc, yy)
         }
 
 module tie_holes(){
-    for(dy=[-tie_top_dy, tie_top_dy]) tie_slot(tie_top_x, yc+dy);
-    for(dy=[-tie_bot_dy, tie_bot_dy]) tie_slot(tie_bot_x, yc+dy);
+    for(dy=[-tie_top_dy, tie_top_dy]) tie_slot(tie_top_x,              yc+dy);
+    for(dy=[-tie_top_dy, tie_top_dy]) tie_slot(tie_top_x+tie_top2_off, yc+dy);
+    for(dy=[-tie_bot_dy, tie_bot_dy]) tie_slot(tie_bot_x,              yc+dy);
 }
+
+// furos da bateria: aplicados DEPOIS de unir o holder, para atravessarem
+// tambem a parede do trilho e deixarem a passagem com a largura cheia.
+module tie_bat_holes()
+    for(f=tie_bat_frac)
+        for(dy=[-tie_bat_dy, tie_bat_dy])
+            translate([holder_x0 + f*h_len, yc+dy, -1])
+                linear_extrude(11)
+                    hull(){
+                        translate([-(tie_len-tie_w)/2, 0]) circle(d=tie_w, $fn=36);
+                        translate([ (tie_len-tie_w)/2, 0]) circle(d=tie_w, $fn=36);
+                    }
+
+module grip_step()
+    translate([x_end-grip_len, grip_marg, plate_t-0.01])
+        cube([grip_len, plate_w-2*grip_marg, grip_h+0.01]);
 
 // passagem de cabo: corta a asa de cima a baixo e entra cable_into na placa,
 // com o fundo arredondado para o fio nao ser cortado na borda
@@ -307,6 +343,7 @@ module cable_slots()
 
 // ============================ SLED ===================================
 translate([-x_start,0,0])
+difference(){
 union(){
     difference(){
         union(){
@@ -322,6 +359,7 @@ union(){
             }
             // ... e as asas por cima: o filete funde com a parede do holder
             wings();
+            grip_step();
         }
         sma_cuts();
         sma_relief();
@@ -330,4 +368,6 @@ union(){
         reopen_holes();
     }
     holder();
+}
+    tie_bat_holes();
 }
