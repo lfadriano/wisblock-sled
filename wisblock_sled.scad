@@ -17,13 +17,18 @@ PLATE  = "vendor/Wisblock_Plate_V1.1.stl";
 HOLDER = "vendor/18650_V2.STL";
 
 // ============ APERTO NO CANO ============
-pipe_id      = 34.5;
+pipe_id      = 33.9;  // MEDIDO no cano deste fabricante (era 34,5 no anterior)
 fit_clear    = -0.12;  // NEGATIVO = interferencia. V1=+0.20 (solto) V2=-0.25 (quebrou)
                        //   -0.08 mais macio | -0.12 atual | -0.18 mais firme
 
 // ============ ASAS: REFORCO ANTI-QUEBRA (PLA) ============
 wall_base    = 3.0;    // raiz: IGUAL A V1. NAO aumentar: reduz o vao interno da PCB
-wall_tip     = 1.8;    // ponta (V1=1.6, V2=1.4). 1.8 = +12% que V1 e ainda folga p/ a PCB
+wall_tip     = 1.5;    // ponta. Com o cano de 33,9 o eixo desce e 1.8 encostaria nos
+                       // componentes da PCB. Afinar NAO enfraquece: a tensao na raiz
+                       // vai com espessura/comprimento^2, entao 1.6 tensiona 29% MENOS
+                       // que encurtar a asa para o mesmo ganho de espaco.
+                       // 1.5 devolve +0,122 mm de folga a PCB (era +0,146 no cano
+                       // de 34,5), que voltou a ser o gargalo com o cano de 33,9.
 fillet       = 3.0;    // NOVO: filete na juncao asa/placa = ganho principal contra a quebra.
                        //   Fica INTEIRO abaixo da PCB (topo em z=5.69, PCB comeca em 6.35).
                        //   Se houver componentes na face de baixo da PCB nas bordas, reduza.
@@ -38,7 +43,9 @@ cham_depth   = 1.2;
 cham_len_a   = 4.0;    // rampa suave no lado do flange
 cham_depth_a = 0.35;
 
-plate_recess = 0.40;
+plate_recess = 0.15;   // bordas da placa recuadas do circulo. Reduzido de 0,40 para
+                       // levantar o eixo do cano e devolver espaco a PCB, que com o
+                       // cano de 33,9 ficou o gargalo do projeto.
 
 // ============ PLACA / CONJUNTO ============
 plate_w   = 29.781971;
@@ -73,7 +80,7 @@ pk_cy     = 6.5;
 ant_len     = 30.0;              // comprimento adicionado nesta extremidade
 x_start     = -ant_len;          // -30
 disc_t      = 3.0;               // espessura do disco
-disc_d      = 34.4;              // Ø do disco (folga de 0,1 no cano)
+disc_d      = pipe_id - 0.10;    // Ø do disco: 0,1 de folga no cano
 x_disc1     = x_start + disc_t;  // -27  face interna do disco
 sma_hole_d  = 6.50;              // furo da rosca (medido do exemplo)
 sma_hex_af  = 8.41;              // sextavado ENTRE FACES (medido do exemplo)
@@ -132,6 +139,8 @@ wing_x0 = x_disc1;               // asas nascem fundidas ao disco
 sma_hex_cc = sma_hex_af/cos(30); // Ø circunscrito do hexagono
 
 echo(str("R_out=",R_out," (Dia ",2*R_out,")   eixo do cano Z=",zc));
+echo(str("interferencia no cano: ",2*R_out-pipe_id," mm  (peca Dia ",2*R_out," / cano DI ",pipe_id,")"));
+echo(str("disco: Dia ",disc_d));
 echo(str("arco da asa = ",(th2-th1)*3.14159265*R_out/180," mm"));
 echo(str("comprimento total = ",x_end-x_start," mm  (x ",x_start," a ",x_end,")"));
 echo(str("hexagono: entre faces ",sma_hex_af,"  circunscrito ",sma_hex_cc));

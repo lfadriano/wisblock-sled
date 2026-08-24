@@ -22,8 +22,8 @@ giving IP68 protection against rain and heat without compromising RF efficiency.
 To keep components secure and prevent vibration-induced shorts, the node uses a
 custom internal chassis, printed as a single piece.
 
-- **Size:** **200.5 mm** end to end, **34.62 mm** across the wings — a sliding
-  interference fit inside Brazilian 40 mm PVC pipe (34.5 mm ID).
+- **Size:** **200.5 mm** end to end, **34.02 mm** across the wings — a sliding
+  interference fit inside Brazilian 40 mm PVC pipe.
 - **Cable management:** five pairs of oblong slots (4.0 × 2.2 mm) take nylon zip
   ties — two pairs near the antenna end, two flanking the battery, one on the tail —
   and two dedicated side slots route the LoRa and BLE antenna wires safely under the
@@ -72,6 +72,16 @@ external solar panel to keep the cell topped up.
 openscad -o dist/Wisblock_Sled.stl wisblock_sled.scad
 ```
 
+> **Measure your pipe first.** Nominal "40 mm" PVC varies by manufacturer: two
+> pipes bought for this project measured **34.5** and **33.9 mm** ID — 0.6 mm apart,
+> which is five times the interference the fit relies on. Set `pipe_id` to your
+> measured value and everything else follows from it.
+>
+> That 0.6 mm is not just a diameter change: a smaller pipe lowers the pipe axis
+> relative to the plate and squeezes the space above it, where the PCB lives. On the
+> 33.9 mm pipe the wing tip had to go from 1.8 to 1.5 mm, and `plate_recess` from
+> 0.40 to 0.15, to keep clearance over the board's components.
+
 ## Printing
 
 **Material: PETG, ABS or ASA, 20% infill. Avoid PLA** — it deforms from the heat
@@ -100,9 +110,11 @@ author: `M3x6+6 (20A)` or `M4x6+6 (30A)`. They are not part of the printed model
 
 | Parameter | Value | Notes |
 |---|---|---|
+| `pipe_id` | `33.9` | **measured** inner diameter of your pipe — everything derives from it |
+| `plate_recess` | `0.15` | how far the plate edge sits inside the circle; smaller lifts the axis and frees space for the PCB |
 | `fit_clear` | `-0.12` | negative means **interference** against the pipe. See the note above |
 | `wall_base` | `3.0` | **do not increase**: it eats the internal clearance and pinches the PCB |
-| `wall_tip` | `1.8` | wing tip; below 1.6 mm PLA snaps at the root |
+| `wall_tip` | `1.5` | wing tip. Thinner is *stronger* here: root stress scales with thickness/length², so thinning beats shortening |
 | `fillet` | `3.0` | fillet at the wing root — the main anti-crack reinforcement |
 | `disc_flat` | `true` | clips the disc at z=0 → flat base, no support needed |
 | `cable_swap` | `true` | swaps which side each cable slot exits on |
