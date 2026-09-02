@@ -1,3 +1,16 @@
+# LoRa Node Enclosures
+
+Two 3D-printed carriers for outdoor LoRa nodes, both parametric OpenSCAD:
+
+- **[Baton Node](#lora-baton-node--40-mm-pvc)** (this page) — tubular node inside a
+  40 mm PVC pipe.
+- **[WisMesh 1W Grid Tray](wismesh-grid/)** — gridded tray for the WisMesh 1 Watt
+  Booster (RAK19007 + RAK3400 + RAK13302) and two 18650 cells inside a Rohdbox
+  110×110×60 IP68 box. Includes the **6-hole drilling pattern** for the assembly,
+  which is not published as a single reference anywhere.
+
+---
+
 # LoRa "Baton Node" — 40 mm PVC
 
 This repository documents the construction of a tubular ("baton" style) LoRa
