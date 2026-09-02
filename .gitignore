@@ -6,3 +6,6 @@ vendor/18650_V2.STL
 *.csg
 .*.scad
 _*.scad
+
+# macOS
+.DS_Store
