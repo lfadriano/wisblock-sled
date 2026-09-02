@@ -30,7 +30,7 @@ pcb_x     = 2.0;    // canto da PCB, em coords da bandeja. Escolhido por busca:
                     // nesta posicao a PCB ocupa y 40..70 e NAO cobre nenhum furo
                     // de fixacao (y=12 e 76), e a torre mais proxima de um furo
                     // fica a 11,7 mm - nenhuma colisao.
-pcb_y     = 40.0;
+pcb_y     = 44.0;   // libera y 4..42 p/ as baterias, ja fora da moldura
 // 6 pontos de fixacao, relativos ao canto da PCB.
 // Os 4 primeiros vem do modelo oficial do RAK19007 (validados no projeto do sled);
 // os 2 ultimos sao a extensao do RAK13302, confirmados em 3 modelos independentes
@@ -49,7 +49,7 @@ tower_fil = 1.2;    // filete na base da torre
 bat_l     = 67.0;   // 65 da celula + folga
 bat_w     = 38.0;   // duas 18650 lado a lado com termoretratil
 bat_x     = 10.5;   // par de celulas centrado em X
-bat_y     = 1.0;    // faixa livre abaixo da PCB
+bat_y     = 4.0;    // encosta na moldura interna, nao sobre ela
 bat_rail  = 2.0;    // altura das guias que impedem o par de rolar
 bat_cell_d= 18.6;
 

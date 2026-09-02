@@ -50,9 +50,9 @@ independentes** de terceiros feitos para este mesmo conjunto (`adapter3`,
 laranja (que estão em 18/82 no sistema dela).
 
 A posição da PCB foi **escolhida por busca**, não por estética: com `pcb_y = 40` o
-conjunto ocupa y 40–70 e não cobre nenhum dos furos de fixação (y = 12 e 76),
+conjunto ocupa y 44–74 e não cobre nenhum dos furos de fixação (y = 12 e 76),
 deixando os quatro acessíveis com a chave. A torre mais próxima de um furo fica a
-**11,7 mm** — nenhuma colisão. Em posições vizinhas as torres da extensão chegavam a
+**1,8 mm** livre do reforço — sem colisão. Em posições vizinhas as torres da extensão chegavam a
 2,9 mm de um furo, sobrepondo o reforço.
 
 As células passam por cima dos furos de y = 12, então esses levam **rebaixo de
@@ -82,7 +82,7 @@ placa laranja 2,5 + bandeja 3,0 + torre 6,0 = **11,5 mm**.
 | `fix_span` | 64,0 | quadrado de fixação da caixa |
 | `n_cell` | 8 | vãos por lado; o vão (7,43 mm) é calculado para fechar exato |
 | `bar_w` | 2,4 | largura da barra da grade |
-| `bat_l` / `bat_w` | 67 / 38 | faixa das duas 18650 com termorretrátil |
+| `bat_l` / `bat_w` | 67 / 38 | faixa das duas 18650, em y 4..42 (fora da moldura) |
 
 ## Impressão
 
