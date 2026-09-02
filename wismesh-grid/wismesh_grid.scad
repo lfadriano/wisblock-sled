@@ -24,6 +24,14 @@ laranja = [[0,10.125], [0.25,9.875], [0.25,9.375], [0.5,8.875], [0.875,8.5], [1.
 // furos da laranja: (18,18) (18,82) (82,18) (82,82) -> quadrado de 64 mm
 fix_span  = 64.0;
 fix_c     = 13.125; // centro do 1o furo, medido do canto da laranja (18 - 4,875)
+                    // (na laranja o recuo e' 13,125 num lado e 12,875 no outro:
+                    //  o padrao de furos fica 0,125 mm fora do centro da placa)
+// Furos PERIFERICOS: recebem as travas de pressao cinzas originais da caixa.
+// Na laranja sao 4 x Ø3,008 no meio de cada aba reta; a grade precisa liberar
+// os mesmos pontos, senao obstrui as travas.
+per_d     = 3.40;   // folga sobre os 3,008 da laranja
+per_pts   = [[3.125,45.125], [45.125,3.125], [45.125,87.125], [87.125,45.125]];
+per_pad   = 1.8;
 fix_d     = 3.60;   // folga p/ M3 passante (a laranja tem Ø3,45)
 fix_pad   = 2.0;    // reforco macico em volta do furo
 fix_cs    = 6.2;    // rebaixo p/ cabeca do M3 (o furo de y=12 fica sob as baterias)
@@ -85,6 +93,7 @@ echo(str("PCB ocupa x ",pcb_x,"..",pcb_x+pcb_l,"   y ",pcb_y,"..",pcb_y+pcb_w));
 echo(str("baterias ocupam x ",bat_x,"..",bat_x+bat_l,"   y ",bat_y,"..",bat_y+bat_w));
 echo(str("altura livre sob a PCB, do fundo do case: ",2.5+grid_t+tower_h," mm"));
 echo(str("grade: ",n_cell,"x",n_cell," vaos de ",cell_w," mm entre barras de ",bar_w));
+echo(str("furos perifericos (travas da caixa): 4 x Dia ",per_d));
 
 // ============================ 2D ====================================
 module plate2d()
@@ -105,6 +114,9 @@ module fix_pos()
     for(x=[fix_c, fix_c+fix_span], y=[fix_c, fix_c+fix_span])
         translate([x, y]) children();
 
+module per_pos()
+    for(p=per_pts) translate(p) children();
+
 module tower_pos()
     for(h=wis_holes) translate([pcb_x+h[0], pcb_y+h[1]]) children();
 
@@ -117,6 +129,7 @@ module tray()
             difference(){
                 grid_voids2d();
                 fix_pos()  circle(d=fix_d + 2*fix_pad);
+                per_pos()  circle(d=per_d + 2*per_pad);
                 tower_pos() circle(d=tower_od + 2.2);
             }
     }
@@ -138,6 +151,9 @@ module bat_rails(){
             cube([bat_l, 2.0, bat_rail+0.01]);
 }
 
+module per_holes()
+    per_pos() translate([0,0,-1]) cylinder(h=grid_t+2, d=per_d, $fn=48);
+
 module fix_holes()
     fix_pos(){
         translate([0,0,-1]) cylinder(h=grid_t+2, d=fix_d);
@@ -154,4 +170,5 @@ difference(){
         bat_rails();
     }
     fix_holes();
+    per_holes();
 }

@@ -49,6 +49,32 @@ independentes** de terceiros feitos para este mesmo conjunto (`adapter3`,
 > mas têm **Ø2,14** — são pequenos para M2.5. Os de montagem são os Ø2,70, com span
 > de 22 mm. Usar 26 mm faria os parafusos não coincidirem.
 
+## Cotas medidas da placa laranja
+
+Medidas tiradas do `placa_laranja_gabarito.stl`, para referência — a documentação
+em texto do projeto divergia em alguns pontos:
+
+| Item | Medido |
+|---|---|
+| Lado | **90,000 × 90,000 mm** (não 90,2) |
+| Espessura | 2,500 mm |
+| Aba maior (face a face do recorte) | **74,000**, recuo 8,000 por lado |
+| Aba maior (trecho reto, sem boleado) | 69,750 |
+| Aba menor (face a face) | **56,500**, recuo 16,750 por lado |
+| Aba menor (trecho reto) | 51,750 |
+| Furos centrais | 4 × **Ø3,452** em (18,18) (18,82) (82,18) (82,82) |
+| Span dos centrais | **64,000 × 64,000** (não 64,2) |
+| Recuo dos centrais | **13,125** de um lado, **12,875** do outro |
+| Furos periféricos | 4 × **Ø3,008** em (8,50) (50,8) (50,92) (92,50) |
+
+Dois detalhes que importam na prática:
+
+- **O padrão de furos não é concêntrico com a placa**: seu centro é (50,00; 50,00) e o
+  da placa é (49,875; 49,875) — 0,125 mm de desvio.
+- **As abas medem coisas diferentes** conforme onde se mede: 74 e 56,5 são de face a
+  face do recorte; o trecho perfeitamente reto é 69,75 e 51,75, porque as transições
+  são boleadas.
+
 ## Fixação na caixa
 
 4 furos Ø3,6 em quadrado de **64 × 64 mm**, coincidentes com os Ø3,45 da placa
