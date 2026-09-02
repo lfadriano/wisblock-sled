@@ -10,7 +10,12 @@ A bandeja é parafusada **sobre** a `placa_laranja_gabarito`, com parafuso passa
 até os pilares da caixa, e é toda vazada — braçadeiras de nylon passam por qualquer
 vão, o que dispensa pontos de amarração dedicados.
 
-Tamanho: **88 × 88 × 9 mm** (bandeja de 3 mm + torres de 6 mm).
+Tamanho: **89 × 89 × 9 mm** (bandeja de 3 mm + torres de 6 mm).
+
+O contorno **não é um quadrado**: os pilares de ar da caixa vão do fundo até a
+tampa, e a placa laranja tem os quatro cantos recortados em **L** para desviar
+deles. A bandeja reusa esse contorno, extraído do próprio
+`placa_laranja_gabarito.stl` (92 pontos, tolerância de 0,12 mm) e recuado 0,5 mm.
 
 ## Gabarito de furos do conjunto WisMesh
 
@@ -49,14 +54,32 @@ independentes** de terceiros feitos para este mesmo conjunto (`adapter3`,
 4 furos Ø3,6 em quadrado de **64 × 64 mm**, coincidentes com os Ø3,45 da placa
 laranja (que estão em 18/82 no sistema dela).
 
-A posição da PCB foi **escolhida por busca**, não por estética: com `pcb_y = 44` o
-conjunto ocupa y 44–74 e não cobre nenhum dos furos de fixação (y = 12 e 76),
-deixando os quatro acessíveis com a chave. A torre mais próxima de um furo fica a
-**1,8 mm** livre do reforço — sem colisão. Em posições vizinhas as torres da extensão chegavam a
-2,9 mm de um furo, sobrepondo o reforço.
+4 furos Ø3,6 em `13,125` e `77,125` (medidos do canto da laranja, cujos furos estão
+em 18 e 82).
 
-As células passam por cima dos furos de y = 12, então esses levam **rebaixo de
-6,2 × 2,0 mm**: a cabeça do parafuso fica sob a superfície e não empurra a bateria.
+A posição da PCB foi **escolhida por busca** sobre o contorno real, verificando duas
+coisas em cada candidata: que as seis torres caem sobre material (não nos recortes
+dos cantos) e que nenhuma invade o reforço de um furo de fixação. Em `pcb = (4,5;
+31)` a torre mais próxima de um furo fica a **20,4 mm** — folga larga.
+
+Os furos de y = 13,125 ficam sob o pack de baterias, então levam **rebaixo de
+6,2 × 2,0 mm**: a cabeça do parafuso fica sob a superfície e não empurra a célula.
+Os de y = 77,125 ficam livres acima da PCB.
+
+### Por que o pack fica empilhado
+
+Os recortes dos cantos custam área: nas faixas laterais (x < 17 e x > 73) o material
+só existe entre **y = 8 e 82**, ou seja 74 mm úteis em vez de 90.
+
+Com as duas células **lado a lado** (38 mm) mais a PCB (30 mm), sobram 6 mm de gap, e
+nesse aperto o furo de fixação de (77,125; 77,125) cai no caminho da torre da
+extensão. Varrendo todas as combinações de posição e reforço, só duas soluções
+apareciam — ambas exigindo reforço de 1,0 mm, menor que a cabeça de um M3 (Ø6), que
+passaria a apoiar sobre a grade vazada.
+
+Com o pack **empilhado** (18,6 de largura × 37,2 de altura) o consumo em Y cai para
+20 mm, a folga sobe para 13,6 mm e o problema desaparece. As guias laterais têm 6 mm
+de altura, porque um pack estreito e alto tomba com facilidade.
 
 ## Ordem de montagem
 
@@ -76,13 +99,14 @@ placa laranja 2,5 + bandeja 3,0 + torre 6,0 = **11,5 mm**.
 
 | Parâmetro | Valor | Notas |
 |---|---|---|
-| `grid_x` / `grid_y` | 88,0 | 1 mm de folga por lado sobre a laranja de 90 × 90 |
+| `grid_inset` | 0,5 | recuo em relação ao contorno da placa laranja |
 | `tower_h` | 6,0 | altura livre sob a PCB |
 | `tower_id` | 2,30 | rosca direta M2.5 |
 | `fix_span` | 64,0 | quadrado de fixação da caixa |
-| `n_cell` | 8 | vãos por lado; o vão (7,43 mm) é calculado para fechar exato |
+| `n_cell` | 8 | vãos por lado; o vão (7,68 mm) é calculado para fechar exato |
 | `bar_w` | 2,4 | largura da barra da grade |
-| `bat_l` / `bat_w` | 67 / 38 | faixa das duas 18650, em y 4..42 (fora da moldura) |
+| `bat_l` / `bat_w` | 67 / 20 | pack empilhado, em y 8..28 |
+| `bat_rail` | 6,0 | altura das guias laterais do pack |
 
 ## Impressão
 
