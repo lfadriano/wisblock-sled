@@ -49,7 +49,7 @@ independentes** de terceiros feitos para este mesmo conjunto (`adapter3`,
 4 furos Ø3,6 em quadrado de **64 × 64 mm**, coincidentes com os Ø3,45 da placa
 laranja (que estão em 18/82 no sistema dela).
 
-A posição da PCB foi **escolhida por busca**, não por estética: com `pcb_y = 40` o
+A posição da PCB foi **escolhida por busca**, não por estética: com `pcb_y = 44` o
 conjunto ocupa y 44–74 e não cobre nenhum dos furos de fixação (y = 12 e 76),
 deixando os quatro acessíveis com a chave. A torre mais próxima de um furo fica a
 **1,8 mm** livre do reforço — sem colisão. Em posições vizinhas as torres da extensão chegavam a
