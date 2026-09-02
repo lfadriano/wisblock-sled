@@ -1,26 +1,62 @@
 # WisMesh 1W Grid Tray — Rohdbox 110×110×60 IP68
 
 Bandeja gradeada para montar o conjunto **WisMesh 1 Watt Booster**
-(RAK19007 + RAK3400 + RAK13302) e duas células 18650 dentro de uma caixa
+(RAK19007 + RAK3400 + RAK13302) e um pack de duas 18650 dentro de uma caixa
 hermética Rohdbox de 110 × 110 × 60 mm.
 
 ![layout](grid_layout.png)
 
-A bandeja é parafusada **sobre** a `placa_laranja_gabarito`, com parafuso passante
-até os pilares da caixa, e é toda vazada — braçadeiras de nylon passam por qualquer
-vão, o que dispensa pontos de amarração dedicados.
+A bandeja é parafusada **sobre** a placa laranja, com parafuso passante até os
+pilares da caixa, e é toda vazada — braçadeiras de nylon passam por qualquer vão, o
+que dispensa pontos de amarração dedicados.
 
-Tamanho: **89 × 89 × 9 mm** (bandeja de 3 mm + torres de 6 mm).
+Tamanho: **98,1 × 98,1 × 9 mm** (bandeja de 3 mm + torres de 6 mm).
 
-O contorno **não é um quadrado**: os pilares de ar da caixa vão do fundo até a
-tampa, e a placa laranja tem os quatro cantos recortados em **L** para desviar
-deles. A bandeja reusa esse contorno, extraído do próprio
-`placa_laranja_gabarito.stl` (92 pontos, tolerância de 0,12 mm) e recuado 0,5 mm.
+## Contorno
+
+O contorno **não é um quadrado**. A caixa tem estruturas que vão do fundo até a
+tampa, e a placa precisa desviar de duas famílias delas:
+
+- **Pilares dos cantos** → os 4 cantos são recortados, deixando a peça em forma de
+  cruz com 4 abas retas. Recuo de **8,1 mm** nas bordas de X e **17,1 mm** nas de Y,
+  resultando em abas de 81,9 e 63,9 mm.
+- **Colunas do meio de cada aba** → 4 colunas de 9,7 mm de largura que exigem
+  **9,3 mm** de recuo. Um círculo de Ø9,7 com centro a 4,45 mm da borda produz
+  exatamente essa profundidade e essa largura ("quase meia lua").
+
+O contorno é construído **parametricamente a partir dos recuos**, não copiado do
+`placa_laranja_gabarito.stl` — ver a divergência abaixo. Também não leva boleado por
+offset: medi que qualquer par `offset()/offset()` desloca o recuo (+2,00 mm usando
+`delta`, +0,46 usando `r`), e aqui a cota é o que desvia dos pilares, então ela
+manda. Os recuos saem exatos em 8,10 e 17,10.
+
+> **Os recortes das colunas engolem os 4 furos periféricos** que a placa laranja tem
+> no meio de cada aba (a 3,125 mm da borda, para as travas de pressão). Eles caem
+> dentro da área removida, portanto a bandeja não os reproduz.
+
+## Divergência entre o STL do gabarito e a placa física
+
+Vale registrar, porque custou algumas idas e voltas:
+
+| | `placa_laranja_gabarito.stl` | Placa física (paquímetro) |
+|---|---|---|
+| Lado | **90,000** (exato, bbox 4,875–94,875) | **99,8** |
+| Recuo das abas | 8,000 / 16,750 | **8,1 / 17,1** |
+| Span dos furos centrais | 64,000 | 64 (não muda — é a caixa que manda) |
+| Recorte das colunas | **ausente** | 9,3 de profundidade |
+
+O arquivo é um **gabarito reduzido**, não a placa. Os **recuos** das abas coincidem
+nos dois (8,0 vs 8,1 e 16,75 vs 17,1), e é por isso que são a medida boa. Já as
+"abas de 74 e 56 mm" que apareciam na documentação em texto foram calculadas com
+lado 90,2 — correto para o gabarito, errado para a placa.
+
+Outras duas coisas medidas no STL que não se sustentam na peça física: a assimetria
+de 0,125 mm no padrão de furos (artefato de modelagem — na placa é simétrico) e a
+ausência do recuo das colunas.
 
 ## Gabarito de furos do conjunto WisMesh
 
-Este é o dado que mais custou a levantar, então fica registrado. São **6 pontos**,
-com furo de **2,3 mm** para o M2.5 cortar a própria rosca no plástico:
+São **6 pontos**, com furo de **2,3 mm** para o M2.5 cortar a própria rosca:
 
 | # | x | y | Origem |
 |---|---|---|---|
@@ -31,81 +67,47 @@ com furo de **2,3 mm** para o M2.5 cortar a própria rosca no plástico:
 | 5 | **75,40** | **2,20** | extensão RAK13302 |
 | 6 | **75,40** | **23,20** | extensão RAK13302 |
 
-Duas armadilhas aqui:
+Duas armadilhas:
 
 - **A extensão não está alinhada com a placa mãe.** Os furos do RAK13302 ficam em
-  y = 2,2 e 23,2 (span 21 mm), cerca de 1,9 mm abaixo dos y = 4,08 / 26,08 da
-  RAK19007. Não é um retângulo contínuo de 6 furos.
+  y = 2,2 e 23,2 (span 21 mm), ~1,9 mm abaixo dos y = 4,08 / 26,08 da RAK19007.
 - **O padrão da placa mãe não é simétrico**: o quarto furo é (57,81; 28,08), não
-  (55,81; 26,08) como a simetria sugeriria.
+  (55,81; 26,08).
 
 Procedência: os furos 1–4 vêm do modelo oficial do RAK19007 e foram validados numa
-peça já impressa e montada. Os furos 5–6 foram confirmados em **três modelos
-independentes** de terceiros feitos para este mesmo conjunto (`adapter3`,
-`341board`, `carlon-v6`), que concordam em x = 75,0–75,5 e span 21,0 mm.
+peça impressa e montada. Os 5–6 foram confirmados em **três modelos independentes**
+de terceiros para este mesmo conjunto (`adapter3`, `341board`, `carlon-v6`), que
+concordam em x = 75,0–75,5 e span 21,0.
 
-> Atenção a uma divergência na documentação da caixa, que informa "26 mm centro a
-> centro no eixo Y, recuados 2,0 mm". Furos com esse padrão existem na RAK19007,
-> mas têm **Ø2,14** — são pequenos para M2.5. Os de montagem são os Ø2,70, com span
-> de 22 mm. Usar 26 mm faria os parafusos não coincidirem.
+## Layout
 
-## Cotas medidas da placa laranja
-
-Medidas tiradas do `placa_laranja_gabarito.stl`, para referência — a documentação
-em texto do projeto divergia em alguns pontos:
-
-| Item | Medido |
+| | y |
 |---|---|
-| Lado | **90,000 × 90,000 mm** (não 90,2) |
-| Espessura | 2,500 mm |
-| Aba maior (face a face do recorte) | **74,000**, recuo 8,000 por lado |
-| Aba maior (trecho reto, sem boleado) | 69,750 |
-| Aba menor (face a face) | **56,500**, recuo 16,750 por lado |
-| Aba menor (trecho reto) | 51,750 |
-| Furos centrais | 4 × **Ø3,452** em (18,18) (18,82) (82,18) (82,82) |
-| Span dos centrais | **64,000 × 64,000** (não 64,2) |
-| Recuo dos centrais | **13,125** de um lado, **12,875** do outro |
-| Furos periféricos | 4 × **Ø3,008** em (8,50) (50,8) (50,92) (92,50) |
+| Pack de baterias | 14 – 34 |
+| WisMesh | 36 – 66 |
+| Livre para cabos e antena | 66 – 90 |
 
-Dois detalhes que importam na prática:
+A posição da PCB foi **escolhida por busca**, verificando em cada candidata que as
+seis torres caem sobre material (não nos recortes) e que nenhuma invade o reforço de
+um furo de fixação nem um recorte de coluna. Em `pcb = (9; 36)` a folga mínima é
+**4,3 mm**.
 
-- **O padrão de furos não é concêntrico com a placa**: seu centro é (50,00; 50,00) e o
-  da placa é (49,875; 49,875) — 0,125 mm de desvio.
-- **As abas medem coisas diferentes** conforme onde se mede: 74 e 56,5 são de face a
-  face do recorte; o trecho perfeitamente reto é 69,75 e 51,75, porque as transições
-  são boleadas.
+### O pack fica empilhado
 
-## Fixação na caixa
+O pack é de duas 18650 **uma sobre a outra** (18,6 de largura × 37,2 de altura), não
+lado a lado. Isso não é preferência: com as células lado a lado (38 mm) mais a PCB
+(30 mm), a área entre as abas não acomoda as duas coisas sem que um furo de fixação
+caia no caminho da torre da extensão. Empilhado, o consumo em Y cai para 20 mm.
 
-4 furos Ø3,6 em quadrado de **64 × 64 mm**, coincidentes com os Ø3,45 da placa
-laranja (que estão em 18/82 no sistema dela).
+As guias laterais têm **6 mm** de altura, porque um pack estreito e alto tomba fácil.
 
-4 furos Ø3,6 em `13,125` e `77,125` (medidos do canto da laranja, cujos furos estão
-em 18 e 82).
+## Fixação
 
-A posição da PCB foi **escolhida por busca** sobre o contorno real, verificando duas
-coisas em cada candidata: que as seis torres caem sobre material (não nos recortes
-dos cantos) e que nenhuma invade o reforço de um furo de fixação. Em `pcb = (4,5;
-31)` a torre mais próxima de um furo fica a **20,4 mm** — folga larga.
+4 furos Ø3,6 em quadrado de **64 × 64 mm**, com recuo de 17,05 (simétrico).
 
-Os furos de y = 13,125 ficam sob o pack de baterias, então levam **rebaixo de
-6,2 × 2,0 mm**: a cabeça do parafuso fica sob a superfície e não empurra a célula.
-Os de y = 77,125 ficam livres acima da PCB.
-
-### Por que o pack fica empilhado
-
-Os recortes dos cantos custam área: nas faixas laterais (x < 17 e x > 73) o material
-só existe entre **y = 8 e 82**, ou seja 74 mm úteis em vez de 90.
-
-Com as duas células **lado a lado** (38 mm) mais a PCB (30 mm), sobram 6 mm de gap, e
-nesse aperto o furo de fixação de (77,125; 77,125) cai no caminho da torre da
-extensão. Varrendo todas as combinações de posição e reforço, só duas soluções
-apareciam — ambas exigindo reforço de 1,0 mm, menor que a cabeça de um M3 (Ø6), que
-passaria a apoiar sobre a grade vazada.
-
-Com o pack **empilhado** (18,6 de largura × 37,2 de altura) o consumo em Y cai para
-20 mm, a folga sobe para 13,6 mm e o problema desaparece. As guias laterais têm 6 mm
-de altura, porque um pack estreito e alto tomba com facilidade.
+Os de y = 17,05 ficam sob o pack, então levam **rebaixo de 6,2 × 2,0 mm**: a cabeça
+do parafuso fica sob a superfície e não empurra a célula. Os de y = 81,05 ficam
+livres acima da PCB.
 
 ## Ordem de montagem
 
@@ -113,7 +115,7 @@ Importa, porque a bandeja fica sob os componentes:
 
 1. Parafusar a bandeja na placa laranja / pilares da caixa (4 × M3)
 2. Parafusar o WisMesh nas 6 torres (M2.5, rosca direta)
-3. Assentar o par de 18650 entre as guias e amarrar com braçadeiras pelos vãos
+3. Assentar o pack entre as guias e amarrar com braçadeiras pelos vãos
 
 ## Câmara de ar
 
@@ -125,14 +127,16 @@ placa laranja 2,5 + bandeja 3,0 + torre 6,0 = **11,5 mm**.
 
 | Parâmetro | Valor | Notas |
 |---|---|---|
-| `grid_inset` | 0,5 | recuo em relação ao contorno da placa laranja |
+| `plate_side` | 99,8 | lado da placa física, medido no paquímetro |
+| `grid_gap` | 0,85 | folga da bandeja em relação à placa, por lado |
+| `rec_major` / `rec_minor` | 8,1 / 17,1 | recuo dos recortes dos cantos |
+| `col_d` / `col_prof` | 9,7 / 9,3 | largura e recuo das colunas do meio das abas |
+| `fix_span` | 64,0 | quadrado de fixação da caixa |
 | `tower_h` | 6,0 | altura livre sob a PCB |
 | `tower_id` | 2,30 | rosca direta M2.5 |
-| `fix_span` | 64,0 | quadrado de fixação da caixa |
-| `n_cell` | 8 | vãos por lado; o vão (7,68 mm) é calculado para fechar exato |
-| `bar_w` | 2,4 | largura da barra da grade |
-| `bat_l` / `bat_w` | 67 / 20 | pack empilhado, em y 8..28 |
-| `bat_rail` | 6,0 | altura das guias laterais do pack |
+| `n_cell` | 9 | vãos por lado; o vão (7,46 mm) é calculado para fechar exato |
+| `bat_w` | 20,0 | pack empilhado |
+| `bat_rail` | 6,0 | altura das guias do pack |
 
 ## Impressão
 
