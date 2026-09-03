@@ -15,13 +15,13 @@ por uma saia ranhurada que contorna a base. Nenhum parafuso, nenhum furo lateral
 |---|---|---|---|
 | Planta com a saia | **38 × 38 mm** | 46 × 38 mm | 66 × 58 mm |
 | Altura total | 24,7 mm | 24,7 mm | 34,7 mm |
-| Abertura inferior | 21 × 21 mm | 29 × 21 mm | 49 × 41 mm |
-| Área de colagem | 799 mm² | 925 mm² | 1557 mm² |
+| Abertura inferior | 27 × 21 mm | 29 × 21 mm | 49 × 41 mm |
+| Face de colagem | 693 mm² | 932 mm² | 1568 mm² |
 | STL | `sma_hood_sq.stl` | `sma_hood.stl` | `sma_hood_xl.stl` |
 
 Tudo o mais é idêntico nas três: mesmo conector, mesmos 45°, mesma parede de 2,5,
 mesma saia de 6 mm com os 3,5 mm de selo contínuo, mesma proporção de colagem
-(73% de contato / 27% de ranhura).
+(~73% de contato / 27% de ranhura).
 
 **A XL** existe por um motivo de montagem: com 49 × 41 de abertura e mais 10 mm de
 pé-direito, o dedo entra inteiro por baixo e segura o corpo do conector enquanto se
@@ -29,9 +29,10 @@ aperta a porca do lado de fora. Custa 66 × 58 mm de parede — mais da metade d
 largura de uma tampa de 110 × 110 — e ~40% mais filamento.
 
 **A quadrada** iguala o comprimento à **largura** (26), não ao comprimento (34): é a
-menor pegada das três na caixa, e a única simétrica em planta. Veja a ressalva abaixo.
+menor pegada das três na caixa, e a única simétrica em planta. Ela troca a saia da
+face posterior por profundidade interna — veja abaixo.
 
-## A quadrada: o que muda ao encurtar a base
+## A quadrada: base curta, e o que ela faz para compensar
 
 ![corte da quadrada com o conector](hood_sq_section.png)
 
@@ -39,17 +40,42 @@ Encurtar a base de 34 para 26 mm tira 4 mm de cada lado, e **o eixo do boss tem 
 recuar junto** — em x = 8, com a borda da frente agora em x = 13, o boss ficaria
 pendurado para fora da planta. Recuando os mesmos 4 mm (`boss_x` = 4), a parede da
 frente sai **idêntica** à da retangular, 14° com a vertical; só a rampa de trás
-encurta, e fica até mais em pé (65° com a horizontal, contra 52° da compacta). Das
-três, a quadrada é a mais fácil de imprimir.
+encurta.
 
-**Não dá para simplesmente centrar o boss.** Com `boss_x` = 0 a peça fica uma pirâmide
-perfeitamente simétrica, mas a folga atrás do conector, medida no eixo, cai para
-**7,9 mm** — menos que a traseira de um SMA de painel com o crimp. Com 4,0 ficam
-**12,7 mm**, que é o que o corte acima mostra: porca do lado de fora, sextavado no
-rebaixo, corpo/crimp e ~5 mm de cabo reto antes de curvar para a abertura.
+O problema que sobra é o espaço atrás do conector, e ele é maior do que parece se
+você olhar só o eixo. O que aperta é o **diâmetro** do que passa ali — o sextavado
+que sobra do rebaixo, o crimp, e só então o cabo. Medindo a folga a partir da face
+interna do boss, por diâmetro:
 
-É a ressalva real da quadrada: **ela não perdoa um rabicho de traseira longa.** Meça o
-seu conector, da face de trás até o fim do crimp; se passar de ~11 mm, use a compacta.
+| Folga para… | Base curta, sem recuo | **Como está** | Compacta |
+|---|---|---|---|
+| Ø9,7 (sextavado) | 6,2 mm | **8,1 mm** | 10,1 mm |
+| Ø8 | 7,8 mm | **12,2 mm** | 16,8 mm |
+| Ø6,5 (crimp) | 9,1 mm | **15,8 mm** | 22,0 mm |
+| Ø2,6 (cabo) | 12,7 mm | **24,0 mm** | 24,0 mm |
+
+A diferença entre as duas primeiras colunas é **a parede posterior deslocada**: ela
+avança 6 mm para dentro da footprint da saia e **para exatamente onde a saia
+terminava**. A face da frente fica fixa, o contorno externo da peça não muda em nada
+— o que se ganha de cavidade sai da saia, não da base. A abertura inferior vai de
+21 × 21 para **27 × 21 mm**, e a folga para o crimp praticamente dobra.
+
+O preço está todo num lugar só: **a face posterior fica sem saia.** A faixa colada
+daquele lado cai de 8,5 para **2,5 mm** — só o anel da própria parede, sem ranhura —
+e a traseira é justamente o lado que o peso da antena tenta descolar. Vale porque a
+conta é folgada: uma antena de 30 g com o centro de massa a ~40 mm põe naquela faixa
+algo como **6 kPa** de tração, contra 1–2 MPa que o PU aguenta. As outras três faces
+seguem com os 8,5 mm e o padrão completo de ranhuras.
+
+![face de colagem da quadrada](hood_sq_glue.png)
+
+Dá para ler na face de colagem: os dois anéis e os canais contornam a frente e as
+laterais e **morrem nos cantos de trás**, onde a saia acabou. A faixa posterior é o
+retângulo liso à esquerda, e o selo contínuo de 3,5 mm em volta da abertura segue
+inteiro, dando a volta completa — ele é a barreira de água e não foi tocado.
+
+Quem preferir a faixa de trás de volta usa `back_gain = 3` (fica 5,5 mm de faixa
+colada atrás, o 1º anel de ranhura ainda cabe inteiro) e devolve 3 mm de cavidade.
 
 ## Cotas
 
@@ -60,7 +86,9 @@ seu conector, da face de trás até o fim do crimp; se passar de ~11 mm, use a c
 | Altura total | 24,7 | 24,7 | 34,7 mm |
 | Centro da face do SMA | 19,0 | 19,0 | 29,0 mm |
 | Recuo do eixo (`boss_x`) | 4,0 | 8,0 | 8,0 mm |
-| Canais radiais na saia | 10 | 12 | 20 |
+| Parede posterior (`back_gain`) | **6,0** | 0 | 0 mm |
+| Saia na face posterior | **0** | 6,0 | 6,0 mm |
+| Canais radiais na saia | 12 | 12 | 20 |
 
 Comum às três:
 
@@ -87,7 +115,7 @@ enquanto se aperta a porca do lado de fora — exatamente como no cap do cano. S
 
 A montagem é feita **antes de colar**, com a peça na mão:
 
-1. Furar a caixa **dentro da área da abertura** (21 × 21, 29 × 21 ou 49 × 41), com o
+1. Furar a caixa **dentro da área da abertura** (27 × 21, 29 × 21 ou 49 × 41), com o
    próprio capuz servindo de gabarito: apoiar, contornar a parede interna a lápis,
    furar no meio da marca. **Ø5 basta** — veja a ordem de montagem abaixo.
 2. Passar a **ponta IPEX** do pigtail pelo furo, de fora para dentro da caixa.
@@ -111,33 +139,35 @@ A montagem é feita **antes de colar**, com a peça na mão:
 ![face de colagem](hood_glue.png)
 
 A face de colagem é uma faixa de **8,5 mm de largura** (2,5 da parede + 6,0 da saia)
-contornando toda a peça, com **2 anéis** e canais radiais, todos de 0,9 × 0,9. Mesma
+contornando a peça, com **2 anéis** e canais radiais, todos de 0,9 × 0,9. Mesma
 lógica do [WisMesh Foot](../wismesh-foot/): o PU cura dentro do sulco e trabalha como
-rebite; os canais radiais deixam o excesso escapar em vez de formar bolha.
+rebite; os canais radiais deixam o excesso escapar em vez de formar bolha. A foto
+acima é a compacta, com o padrão completo nas quatro faces.
 
 **A diferença é que aqui a junta também veda.** Por isso a faixa mais interna — os
 **3,5 mm** que envolvem a abertura — é **contato contínuo**, sem nenhuma ranhura
 cruzando: é a barreira de água. Todos os sulcos ficam para fora dela, e os canais
 radiais correm do primeiro anel **para a borda externa**, nunca para dentro.
 
+Medido nos STLs:
+
 | | Quadrada | Compacta | XL |
 |---|---|---|---|
-| Face de colagem | 799 mm² | 925 mm² | 1557 mm² |
-| Selo contínuo (interno) | 305 mm² (38%) | 361 mm² (39%) | 641 mm² (41%) |
-| Contato total | 582 mm² — **73%** | 675 mm² — **73%** | 1144 mm² — **73%** |
-| Ranhura | 217 mm² (27%) | 250 mm² (27%) | 413 mm² (27%) |
-| PU alojado | ~195 mm³ | ~225 mm³ | ~372 mm³ |
+| Face de colagem | 693 mm² | 932 mm² | 1568 mm² |
+| Contato | 514 mm² — **74%** | 673 mm² — **72%** | 1141 mm² — **73%** |
+| Ranhura | 179 mm² (26%) | 258 mm² (28%) | 427 mm² (27%) |
+| PU alojado | ~161 mm³ | ~232 mm³ | ~385 mm³ |
 
-Os 73% de contato são bem mais conservadores que os 39% do pezinho, de propósito:
+Os ~73% de contato são bem mais conservadores que os 39% do pezinho, de propósito:
 esta junta faz três coisas ao mesmo tempo — colar, vedar e resistir ao **momento da
-antena**, que numa haste a 45° é o esforço que realmente tenta descolar a peça. A
-proporção é a mesma nas três versões; o número de canais radiais acompanha o
-perímetro para manter o passo em ~10,5 mm, e é sempre par, para a peça não sair
-assimétrica.
+antena**, que numa haste a 45° é o esforço que realmente tenta descolar a peça. O
+número de canais radiais acompanha o perímetro para manter o passo em ~10,5 mm, e é
+sempre par, para a peça não sair assimétrica.
 
 A saia é uma **rampa** (2,6 mm junto à parede, 2,0 na ponta) com chanfro de 0,6 na
 aresta inferior externa: o chanfro vira reservatório para o cordão de PU que se passa
-por fora, contornando a peça depois de assentada.
+por fora, contornando a peça depois de assentada. Onde não há saia — a face posterior
+da quadrada — o chanfro sai na própria aresta da parede.
 
 ## Gerar
 
@@ -153,6 +183,7 @@ Parâmetros que valem mexer:
 |---|---|
 | `square` | iguala o comprimento à largura (26 × 26 de corpo) |
 | `xl` | +10 de altura, +20 na planta |
+| `back_gain` | quanto a parede posterior avança para dentro da saia (0…`skirt_w`) |
 | `grow_xy` / `grow_h` | os acréscimos da XL, para um tamanho intermediário |
 | `boss_x` | recuo do eixo; mexer junto com a planta, veja a seção da quadrada |
 | `tilt` | 45 → 30 ou 60, se quiser outra inclinação |
@@ -172,7 +203,7 @@ com as paredes inclinadas para dentro e nada de bridge; e o teto da cavidade, no
 fundo do boss, é justamente o plano de 45°, que é o limite auto-suportado. As
 ranhuras saem na primeira camada, como vãos rasos.
 
-A parede mais deitada é a rampa de trás: **65° com a horizontal na quadrada, 52° na
+A parede mais deitada é a rampa de trás: **55° com a horizontal na quadrada, 52° na
 compacta, 50° na XL** — quanto mais espalhada a peça, mais perto do limite dos 45°.
 As três imprimem sem suporte, mas se o seu perfil tiver refrigeração fraca, olhe essa
 região na primeira peça XL.

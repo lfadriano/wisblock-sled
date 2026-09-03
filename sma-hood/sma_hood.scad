@@ -74,6 +74,29 @@ skirt_t     = 2.6;    // espessura junto a' parede
 skirt_e     = 2.0;    // espessura na ponta (a saia e' uma rampa)
 skirt_ch    = 0.6;    // chanfro na aresta inferior externa
 
+// ---------------- profundidade traseira ----------------
+// A parede de TRAS (a oposta a' ponta da antena) avanca back_gain para dentro
+// da footprint da saia, e a saia encurta exatamente o mesmo tanto naquele lado.
+// O contorno externo da peca nao muda — o que se ganha de cavidade sai da saia,
+// nao da base. A face da frente fica fixa.
+//
+// So' a quadrada precisa: nas outras a base ja' e' longa atras do boss e a
+// folga no eixo passa dos 50 mm. Na quadrada ela vai de 12,7 para 19,6 mm.
+//
+// O padrao na quadrada e' o deslocamento CHEIO (back_gain = skirt_w): a parede
+// para exatamente onde a saia terminava, e a face posterior fica sem saia. Nao
+// e' de graca — a faixa colada de tras cai de 8,5 para 2,5 mm (so' o anel da
+// parede, sem ranhura), e a traseira e' justamente o lado que o peso da antena
+// tenta descolar. Vale porque a conta e' folgada: uma antena de 30 g com o
+// centro de massa a ~40 mm da a' faixa de tras algo como 6 kPa de tracao,
+// contra 1-2 MPa que o PU aguenta. Quem quiser a faixa de volta usa 3,0 ou 4,0
+// e perde 3 mm de cavidade.
+back_gain   = square ? skirt_w : 0.0;
+back_skirt  = skirt_w - back_gain;   // saia que resta na face posterior
+x_front     = base_l/2;              // borda da frente, FIXA
+x_back      = base_l/2 + back_gain;  // borda de tras do corpo
+assert(back_gain >= 0 && back_gain <= skirt_w, "back_gain tem que ficar entre 0 e skirt_w");
+
 // ---------------- ranhuras para o PU ----------------
 // Mesma logica do WisMesh Foot: o PU cura dentro do sulco e trabalha como
 // rebite; os canais radiais deixam o excesso escapar em vez de formar bolha.
@@ -88,7 +111,7 @@ ring_gap    = 1.10;   // contato entre os dois aneis
 // para manter o passo em ~10,5 mm em qualquer variante (e par, para a peca
 // nao ficar assimetrica): 12 na compacta, 20 na XL, 10 na quadrada.
 rad_pitch   = 10.5;
-rad_peri    = 2*((base_l-2*base_r)+(base_w-2*base_r)) + 2*PI*(base_r+3);
+rad_peri    = 2*((x_front+x_back-2*base_r)+(base_w-2*base_r)) + 2*PI*(base_r+3);
 rad_n       = 2*round(rad_peri/(2*rad_pitch));
 rad_w       = 0.90;
 // Balanco da face de colagem (925 mm2 no total): 73% de contato direto e 27% de
@@ -105,7 +128,7 @@ $fn = 96;
 // =====================================================================
 
 sma_hex_cc = sma_hex_af/cos(30);   // Dia circunscrito do sextavado
-inner_l    = base_l - 2*wall;
+inner_l    = x_front + x_back - 2*wall;
 inner_w    = base_w - 2*wall;
 top_max    = top_h + (boss_d/2)*sin(tilt);
 band_w     = wall + skirt_w;       // largura total da face de colagem
@@ -117,12 +140,24 @@ echo(str("face do SMA: Dia ",boss_d,", parede ",face_t," -> hex de ",sma_hex_dep
          " por dentro + ",face_t-sma_hex_dep," mm de furo redondo"));
 echo(str("sextavado: entre faces ",sma_hex_af,"  circunscrito ",sma_hex_cc));
 echo(str("area interna (onde furar a caixa): ",inner_l," x ",inner_w," mm"));
+if(back_gain > 0)
+    echo(str("parede de tras avancada ",back_gain," mm; saia posterior ",back_skirt,
+             " -> faixa colada de ",wall+back_skirt," mm naquele lado"));
 echo(str("canais radiais: ",rad_n," (passo de ",rad_peri/rad_n," mm)"));
-echo(str("face de colagem: faixa de ",band_w," mm, sendo ",wall+seal_band,
-         " mm de contato continuo antes do 1o anel"));
+echo(str("face de colagem: faixa de ",band_w," mm na frente e nas laterais",
+         back_gain>0 ? str(", ",wall+back_skirt," mm atras") : "",
+         "; contato continuo de ",wall+seal_band," mm antes do 1o anel"));
 
-// planta da parede externa, dilatada/erodida de o
+// Planta da PAREDE do corpo, dilatada/erodida de o. Assimetrica em X: a borda
+// de tras esta' em -x_back e a da frente em +x_front.
 module outline(o=0)
+    offset(r=o) offset(r=base_r)
+        translate([(x_front-x_back)/2, 0])
+            square([x_front+x_back-2*base_r, base_w-2*base_r], center=true);
+
+// Planta do ENVELOPE (borda externa da saia). Nao depende de back_gain: o que a
+// parede de tras avanca, a saia encurta, e o contorno externo fica o mesmo.
+module env(o=0)
     offset(r=o) offset(r=base_r)
         square([base_l-2*base_r, base_w-2*base_r], center=true);
 
@@ -131,7 +166,10 @@ module on_axis(){ translate([boss_x,0,top_h]) rotate([0,90-tilt,0]) children(); 
 
 module body(){
     hull(){
-        linear_extrude(base_h) outline(0);
+        // o chanfro da base fica dentro da saia enquanto ela existir; no
+        // deslocamento cheio ele e' a aresta externa da face posterior
+        linear_extrude(skirt_ch) outline(-skirt_ch);
+        translate([0,0,skirt_ch]) linear_extrude(base_h-skirt_ch) outline(0);
         on_axis() translate([0,0,-boss_len]) cylinder(h=boss_len, d=boss_d);
     }
 }
@@ -147,8 +185,8 @@ module cavity(){
 module skirt(){
     hull(){
         linear_extrude(skirt_t) outline(0);
-        translate([0,0,skirt_ch]) linear_extrude(skirt_e-skirt_ch) outline(skirt_w);
-        linear_extrude(skirt_ch) outline(skirt_w-skirt_ch);
+        translate([0,0,skirt_ch]) linear_extrude(skirt_e-skirt_ch) env(skirt_w);
+        linear_extrude(skirt_ch) env(skirt_w-skirt_ch);
     }
 }
 
