@@ -62,8 +62,12 @@ col_r     = col_d/2; // 4,85 = metade da largura -> o fundo e' um semicirculo
 // ---------------- conjunto WisMesh ----------------
 pcb_l     = 81.0;   // sanduiche RAK19007 + RAK3400 + RAK13302
 pcb_w     = 30.0;
-pcb_x     = 9.0;
-pcb_y     = 36.0;   // por busca: torres apoiadas em material e longe dos furos
+pcb_rot   = 90;     // 0 = PCB deitada ao longo de X | 90 = em pe ao longo de Y.
+                    // Com 90 o pack vai para junto da aba MAIOR (71,7 nas bordas
+                    // de X) e a PCB usa a direcao onde a peca tem 98,1 livres:
+                    // a folga minima sobe de 4,3 para 12,4 mm.
+pcb_x     = 33.0;
+pcb_y     = 9.0;   // por busca: torres apoiadas em material e longe dos furos
                     // de fixacao e dos recortes das colunas
 // 6 pontos, relativos ao canto da PCB. Os 4 primeiros vem do modelo oficial do
 // RAK19007 (validados numa peca impressa); os 2 ultimos sao a extensao do
@@ -83,7 +87,7 @@ tower_fil = 1.2;
 // caberia junto com a PCB na area util entre as abas.
 bat_l     = 67.0;
 bat_w     = 20.0;
-bat_x     = 15.0;
+bat_x     = 8.0;    // pack tambem em pe, encostado na aba maior
 bat_y     = 14.0;
 bat_rail  = 6.0;    // guias altas: pack estreito e alto tomba facil
 bat_cell_d= 18.6;
@@ -95,6 +99,15 @@ n_cell    = 9;
 edge_w    = 3.5;
 
 $fn = 64;
+
+// dimensoes efetivas e furos ja rotacionados
+pcb_ex  = (pcb_rot==90) ? pcb_w : pcb_l;
+pcb_ey  = (pcb_rot==90) ? pcb_l : pcb_w;
+bat_ex  = (pcb_rot==90) ? bat_w : bat_l;
+bat_ey  = (pcb_rot==90) ? bat_l : bat_w;
+wis_eff = (pcb_rot==90)
+            ? [for(h=wis_holes) [pcb_w - h[1], h[0]]]
+            : wis_holes;
 
 rec_M = rec_major;
 rec_m = rec_minor;
@@ -111,8 +124,8 @@ echo(str("bandeja ",L," x ",L," x ",grid_t," (placa ",plate_side," menos ",grid_
 echo(str("recuos: Y ",rec_M," / X ",rec_m," -> abas de ",tab_major," e ",tab_minor,", canto R",corner_r));
 echo(str("furos de fixacao: span ",fix_span,", recuo ",fix_c," simetrico"));
 echo(str("colunas: slot ",col_d," x ",col_prof,", reto na borda, cantos do fundo R",col_r));
-echo(str("PCB ocupa x ",pcb_x,"..",pcb_x+pcb_l,"   y ",pcb_y,"..",pcb_y+pcb_w));
-echo(str("pack ocupa x ",bat_x,"..",bat_x+bat_l,"   y ",bat_y,"..",bat_y+bat_w));
+echo(str("PCB (rot ",pcb_rot,") ocupa x ",pcb_x,"..",pcb_x+pcb_ex,"   y ",pcb_y,"..",pcb_y+pcb_ey));
+echo(str("pack ocupa x ",bat_x,"..",bat_x+bat_ex,"   y ",bat_y,"..",bat_y+bat_ey));
 echo(str("grade: ",n_cell,"x",n_cell," vaos de ",cell_w," entre barras de ",bar_w));
 echo(str("altura livre sob a PCB, do fundo do case: ",2.5+grid_t+tower_h));
 
@@ -152,7 +165,7 @@ module fix_pos()
     for(x=[fix_c, L-fix_c], y=[fix_c, L-fix_c]) translate([x, y]) children();
 
 module tower_pos()
-    for(h=wis_holes) translate([pcb_x+h[0], pcb_y+h[1]]) children();
+    for(h=wis_eff) translate([pcb_x+h[0], pcb_y+h[1]]) children();
 
 // ============================ 3D ====================================
 module tray()
@@ -177,9 +190,14 @@ module towers()
         }
 
 module bat_rails()
-    for(yy=[bat_y, bat_y+bat_w])
-        translate([bat_x, yy-1.0, grid_t-0.01])
-            cube([bat_l, 2.0, bat_rail+0.01]);
+    if(pcb_rot==90)
+        for(xx=[bat_x, bat_x+bat_ex])
+            translate([xx-1.0, bat_y, grid_t-0.01])
+                cube([2.0, bat_ey, bat_rail+0.01]);
+    else
+        for(yy=[bat_y, bat_y+bat_ey])
+            translate([bat_x, yy-1.0, grid_t-0.01])
+                cube([bat_ex, 2.0, bat_rail+0.01]);
 
 module fix_holes()
     fix_pos(){

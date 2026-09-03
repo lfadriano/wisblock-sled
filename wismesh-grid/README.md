@@ -82,16 +82,24 @@ concordam em x = 75,0–75,5 e span 21,0.
 
 ## Layout
 
-| | y |
-|---|---|
-| Pack de baterias | 14 – 34 |
-| WisMesh | 36 – 66 |
-| Livre para cabos e antena | 66 – 90 |
+A PCB fica **em pé** (`pcb_rot = 90`), ao longo de Y:
 
-A posição da PCB foi **escolhida por busca**, verificando em cada candidata que as
-seis torres caem sobre material (não nos recortes) e que nenhuma invade o reforço de
-um furo de fixação nem um recorte de coluna. Em `pcb = (9; 36)` a folga mínima é
-**4,3 mm**.
+| | x | y |
+|---|---|---|
+| Pack de baterias | 8 – 28 | 14 – 81 |
+| WisMesh | 33 – 63 | 9 – 90 |
+| Livre para cabos e antena | 63 – 98 | — |
+
+Rodar 90° não é só arranjo: o pack passa a encostar na **aba maior** (71,7 nas bordas
+de X, contra 53,6 nas de Y) e a PCB usa a direção em que a peça tem 98,1 mm livres.
+A folga mínima entre uma torre e um furo ou recorte sobe de **4,3 para 12,4 mm**.
+
+A posição foi **escolhida por busca**, verificando em cada candidata que as seis
+torres caem sobre material (não nos recortes) e que nenhuma invade o reforço de um
+furo de fixação nem um slot de coluna.
+
+Para voltar ao arranjo deitado basta `pcb_rot = 0` — os furos e as guias do pack
+acompanham.
 
 ### O pack fica empilhado
 
@@ -106,9 +114,8 @@ As guias laterais têm **6 mm** de altura, porque um pack estreito e alto tomba 
 
 4 furos Ø3,6 em quadrado de **59,6 × 59,6 mm**, com recuo de 19,25 (simétrico).
 
-Os de y = 19,25 ficam sob o pack, então levam **rebaixo de 6,2 × 2,0 mm**: a cabeça
-do parafuso fica sob a superfície e não empurra a célula. Os de y = 78,85 ficam
-livres acima da PCB.
+Os dois de x = 19,25 ficam sob o pack, então levam **rebaixo de 6,2 × 2,0 mm**: a cabeça
+do parafuso fica sob a superfície e não empurra a célula. Os de x = 78,85 ficam livres.
 
 ## Ordem de montagem
 
@@ -138,6 +145,7 @@ placa laranja 2,5 + bandeja 3,0 + torre 6,0 = **11,5 mm**.
 | `tower_h` | 6,0 | altura livre sob a PCB |
 | `tower_id` | 2,30 | rosca direta M2.5 |
 | `n_cell` | 9 | vãos por lado; o vão (7,46 mm) é calculado para fechar exato |
+| `pcb_rot` | 90 | 0 = PCB deitada em X, 90 = em pé em Y |
 | `bat_w` | 20,0 | pack empilhado |
 | `bat_rail` | 6,0 | altura das guias do pack |
 
