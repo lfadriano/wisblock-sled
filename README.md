@@ -15,6 +15,9 @@ Carriers and accessories for outdoor LoRa nodes, all parametric OpenSCAD:
   connector to a **45° face** on the outside of a sealed box, in three sizes. Fully
   closed, no screws, no side openings: a grooved skirt does the holding and the
   sealing.
+- **[PU Rail](pu-rail/)** — a PU-glued spacer rail that sits between a sealed box and
+  an aluminium plate: glued on one face, M4 heat-set inserts on the other, and
+  dovetailed channels that key the adhesive instead of merely venting it.
 
 ---
 
