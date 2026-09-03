@@ -97,6 +97,20 @@ x_front     = base_l/2;              // borda da frente, FIXA
 x_back      = base_l/2 + back_gain;  // borda de tras do corpo
 assert(back_gain >= 0 && back_gain <= skirt_w, "back_gain tem que ficar entre 0 e skirt_w");
 
+// A parede posterior sobe VERTICAL (90 graus com a base) ate' back_wall_h, e do
+// alto dela o teto sai reto para o boss. Sem isso a rampa comeca na propria
+// aresta da base e come' a parte de cima da cavidade.
+//
+// back_h_max e' a altura em que esse teto sai a 45 graus, ou seja PARALELO ao
+// eixo da antena — e' o valor bom por dois motivos ao mesmo tempo: 45 graus e' o
+// limite auto-suportado (o teto e' a face de baixo de um vao), e um teto
+// paralelo ao eixo deixa de atravessar o corredor por onde saem a traseira do
+// conector e o cabo, que descem a 45 graus. Subir mais que isso deita o teto
+// (9 mm ja' da' 42 graus) e passa a pedir suporte na cavidade.
+back_h_max  = top_h + (boss_d/2 - (x_back + boss_x)*sin(tilt))/cos(tilt);
+back_wall_h = square ? back_h_max : 0;   // 0 = rampa desde a aresta da base
+back_slab   = 3.0;   // espessura do gerador da parede em pe'
+
 // ---------------- ranhuras para o PU ----------------
 // Mesma logica do WisMesh Foot: o PU cura dentro do sulco e trabalha como
 // rebite; os canais radiais deixam o excesso escapar em vez de formar bolha.
@@ -143,6 +157,9 @@ echo(str("area interna (onde furar a caixa): ",inner_l," x ",inner_w," mm"));
 if(back_gain > 0)
     echo(str("parede de tras avancada ",back_gain," mm; saia posterior ",back_skirt,
              " -> faixa colada de ",wall+back_skirt," mm naquele lado"));
+if(back_wall_h > 0)
+    echo(str("parede posterior em pe' ate' ",back_wall_h," mm (90 graus com a base);",
+             " teto a partir dali a 45 graus, paralelo ao eixo"));
 echo(str("canais radiais: ",rad_n," (passo de ",rad_peri/rad_n," mm)"));
 echo(str("face de colagem: faixa de ",band_w," mm na frente e nas laterais",
          back_gain>0 ? str(", ",wall+back_skirt," mm atras") : "",
@@ -164,12 +181,21 @@ module env(o=0)
 // referencial do SMA: origem no CENTRO DA FACE, +Z saindo pela antena
 module on_axis(){ translate([boss_x,0,top_h]) rotate([0,90-tilt,0]) children(); }
 
+// a fatia de tras da planta, gerador da parede em pe'
+module back_region(o=0)
+    intersection(){
+        outline(o);
+        translate([-x_back-o-1, -base_w]) square([back_slab+1, 2*base_w]);
+    }
+
 module body(){
     hull(){
         // o chanfro da base fica dentro da saia enquanto ela existir; no
         // deslocamento cheio ele e' a aresta externa da face posterior
         linear_extrude(skirt_ch) outline(-skirt_ch);
         translate([0,0,skirt_ch]) linear_extrude(base_h-skirt_ch) outline(0);
+        if(back_wall_h > base_h)
+            translate([0,0,skirt_ch]) linear_extrude(back_wall_h-skirt_ch) back_region(0);
         on_axis() translate([0,0,-boss_len]) cylinder(h=boss_len, d=boss_d);
     }
 }
@@ -178,6 +204,8 @@ module body(){
 module cavity(){
     hull(){
         translate([0,0,-1]) linear_extrude(base_h-wall+1) outline(-wall);
+        if(back_wall_h > base_h)
+            translate([0,0,-1]) linear_extrude(back_wall_h-wall+1) back_region(-wall);
         on_axis() translate([0,0,-boss_len]) cylinder(h=boss_len-face_t, d=boss_d-2*wall);
     }
 }

@@ -7,6 +7,12 @@ por uma saia ranhurada que contorna a base. Nenhum parafuso, nenhum furo lateral
 
 ![capuz](hood_iso.png)
 
+> **boss**, no texto e no código (`boss_d`, `boss_x`, `boss_len`): é a **sede
+> cilíndrica** do conector — o cilindro de Ø16 que sai do alto do cone e cuja face
+> plana, perpendicular ao eixo da antena, recebe a arruela e a porca do SMA. Termo
+> corrente de projeto mecânico para um ressalto cilíndrico que carrega um furo ou
+> um assento.
+
 ## Três versões, o mesmo arquivo
 
 ![quadrada, compacta e XL](hood_sizes.png)
@@ -47,20 +53,52 @@ você olhar só o eixo. O que aperta é o **diâmetro** do que passa ali — o s
 que sobra do rebaixo, o crimp, e só então o cabo. Medindo a folga a partir da face
 interna do boss, por diâmetro:
 
-| Folga para… | Base curta, sem recuo | **Como está** | Compacta |
-|---|---|---|---|
-| Ø9,7 (sextavado) | 6,2 mm | **8,1 mm** | 10,1 mm |
-| Ø8 | 7,8 mm | **12,2 mm** | 16,8 mm |
-| Ø6,5 (crimp) | 9,1 mm | **15,8 mm** | 22,0 mm |
-| Ø2,6 (cabo) | 12,7 mm | **24,0 mm** | 24,0 mm |
+| Folga para… | Base curta, crua | Parede recuada | **Como está** | Compacta |
+|---|---|---|---|---|
+| Ø9,7 (sextavado) | 6,2 mm | 8,1 mm | **15,3 mm** | 10,1 mm |
+| Ø8 | 7,8 mm | 12,2 mm | **21,3 mm** | 16,8 mm |
+| Ø6,5 (crimp) | 9,1 mm | 15,8 mm | **22,0 mm** | 22,0 mm |
+| Ø2,6 (cabo) | 12,7 mm | 24,0 mm | **24,0 mm** | 24,0 mm |
 
-A diferença entre as duas primeiras colunas é **a parede posterior deslocada**: ela
-avança 6 mm para dentro da footprint da saia e **para exatamente onde a saia
-terminava**. A face da frente fica fixa, o contorno externo da peça não muda em nada
-— o que se ganha de cavidade sai da saia, não da base. A abertura inferior vai de
-21 × 21 para **27 × 21 mm**, e a folga para o crimp praticamente dobra.
+Duas mudanças produziram essas colunas, as duas **sem tocar no contorno externo**, que
+segue 38 × 38 × 24,7 mm:
 
-O preço está todo num lugar só: **a face posterior fica sem saia.** A faixa colada
+**1. A parede posterior deslocada** (`back_gain` = 6). Ela avança 6 mm para dentro da
+footprint da saia e **para exatamente onde a saia terminava**. A face da frente fica
+fixa — o que se ganha de cavidade sai da saia, não da base. A abertura inferior vai de
+21 × 21 para **27 × 21 mm**.
+
+**2. A parede posterior em pé** (`back_wall_h` = 7,31). Em vez de a rampa começar na
+própria aresta da base, a parede sobe **vertical, a 90° com a base**, até 7,31 mm, e só
+dali o teto sai para o boss.
+
+![perfil: antes tracejado, agora cheio](hood_sq_profile.png)
+
+No perfil acima, o tracejado vermelho é o contorno anterior e o cheio é o atual; o
+hachurado é o que a cavidade ganhou. A linha fina é o eixo da antena — e é aí que está
+a graça: **7,31 mm é exatamente a altura em que o teto sai paralelo ao eixo.** O
+corredor por onde saem a traseira do conector e o cabo desce a 45°; com o teto na mesma
+inclinação, ele deixa de cortar o corredor. Por isso a folga para o sextavado quase
+dobra (8,1 → 15,3) com um ganho de volume de só 12%.
+
+Esse mesmo 45° é o **limite auto-suportado**: o teto é a face de baixo de um vão. Subir
+a parede além de 7,31 deita o teto (9 mm já dá 42°) e passa a pedir suporte na
+cavidade. Então 7,31 não é um número escolhido, é onde as duas restrições se encontram.
+
+| Cavidade | Base curta, crua | Parede recuada | **Como está** | Compacta |
+|---|---|---|---|---|
+| Volume interno | 4 178 mm³ | 5 134 mm³ | **5 793 mm³** | 5 460 mm³ |
+| Abertura inferior | 21 × 21 | 27 × 21 | **27 × 21 mm** | 29 × 21 mm |
+| Altura do teto a x = −16 | 1,3 | 1,3 mm | **5,4 mm** | — |
+| Altura do teto a x = −12 | 7,4 | 7,4 mm | **9,9 mm** | — |
+
+A parede em pé sozinha vale **+659 mm³ (+13%)**, todo concentrado no terço traseiro:
++4,1 mm de altura de teto junto à parede de trás, caindo a zero na vertical do boss,
+onde nada mudou. Somando as duas mudanças, a cavidade saiu de 4 178 para 5 793 mm³
+(**+39%**) — e a quadrada passou a ter **mais volume interno que a compacta**, numa
+pegada 8 mm menor.
+
+O preço das duas mudanças está todo num lugar só: **a face posterior fica sem saia.** A faixa colada
 daquele lado cai de 8,5 para **2,5 mm** — só o anel da própria parede, sem ranhura —
 e a traseira é justamente o lado que o peso da antena tenta descolar. Vale porque a
 conta é folgada: uma antena de 30 g com o centro de massa a ~40 mm põe naquela faixa
@@ -203,10 +241,12 @@ com as paredes inclinadas para dentro e nada de bridge; e o teto da cavidade, no
 fundo do boss, é justamente o plano de 45°, que é o limite auto-suportado. As
 ranhuras saem na primeira camada, como vãos rasos.
 
-A parede mais deitada é a rampa de trás: **55° com a horizontal na quadrada, 52° na
-compacta, 50° na XL** — quanto mais espalhada a peça, mais perto do limite dos 45°.
-As três imprimem sem suporte, mas se o seu perfil tiver refrigeração fraca, olhe essa
-região na primeira peça XL.
+A superfície mais deitada é o teto de trás: **45° na quadrada, 52° na compacta, 50° na
+XL.** As três imprimem sem suporte, mas a quadrada está **exatamente no limite** — o
+teto foi levantado até ficar paralelo ao eixo da antena, e 45° é justamente o ângulo
+que ainda se auto-suporta. Se o seu perfil tiver refrigeração fraca, olhe essa região
+na primeira peça. Quem quiser margem baixa `back_wall_h` para 5 ou 6 (o teto volta
+para ~48°) e devolve umas poucas centenas de mm³.
 
 Perímetros: 3 ou mais. A parede é de 2,5 mm e o esforço aqui é de flexão na raiz do
 cone — vale mais perímetro que preenchimento. 20–25% de infill.
