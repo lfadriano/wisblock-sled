@@ -12,7 +12,7 @@ Carriers and accessories for outdoor LoRa nodes, all parametric OpenSCAD:
   alternative to the tray: glue six of them straight onto the orange plate and
   place the assembly wherever you like.
 - **[SMA Hood](sma-hood/)** — a PU-glued hood that carries the panel-mount SMA
-  connector to a **45° face** on the outside of a sealed box, in two sizes. Fully
+  connector to a **45° face** on the outside of a sealed box, in three sizes. Fully
   closed, no screws, no side openings: a grooved skirt does the holding and the
   sealing.
 

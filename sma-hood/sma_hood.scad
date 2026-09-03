@@ -21,18 +21,23 @@
 //  do SMA — mesma tecnica do cap do Baton Node: PU sob a arruela.
 // =====================================================================
 
-// ---------------- variante de tamanho ----------------
-// Duas versoes da MESMA peca, saindo deste mesmo arquivo:
-//   xl = false -> compacta,  46 x 38 x 24,7 mm (com a saia)
-//   xl = true  -> 10 mm mais alta e 20 mm mais larga na planta,
-//                 66 x 58 x 34,7 mm, abertura de 49 x 41 embaixo.
+// ---------------- variantes ----------------
+// Tres versoes da MESMA peca, saindo deste mesmo arquivo:
+//
+//   (nada)          compacta,   46 x 38 x 24,7 mm com a saia
+//   -D xl=true      XL,         66 x 58 x 34,7 mm
+//   -D square=true  quadrada,   38 x 38 x 24,7 mm
+//
 // A XL existe por um motivo de montagem: com a abertura de 49 x 41 e mais
 // 10 mm de pe direito, o dedo entra por baixo e segura o corpo do conector
 // enquanto se aperta a porca do lado de fora. Na compacta (29 x 21) da' para
 // enfiar so' a ponta do dedo.
 //
-//   openscad -D xl=true -o sma_hood_xl.stl sma_hood.scad
+// A quadrada iguala o comprimento a' LARGURA (o menor dos dois), nao ao
+// comprimento: 26 x 26 de corpo em vez de 34 x 26. Fica a menor das tres na
+// caixa. O que ela cobra esta' anotado em boss_x, logo abaixo.
 xl          = false;
+square      = false;
 grow_xy     = xl ? 20.0 : 0.0;   // acrescimo na planta, nos dois sentidos
 grow_h      = xl ? 10.0 : 0.0;   // acrescimo na altura
 
@@ -48,12 +53,18 @@ tilt        = 45;     // graus em relacao a' superficie colada
 boss_d      = 16.0;   // Dia da face plana onde a arruela e a porca assentam
 boss_len    = 8.0;    // comprimento do cilindro do boss, ao longo do eixo
 top_h       = 19.0 + grow_h;  // altura do CENTRO da face do SMA acima da caixa
-boss_x      = 8.0;    // deslocamento do eixo no sentido em que a antena aponta
+// Deslocamento do eixo no sentido em que a antena aponta. Na quadrada o eixo
+// RECUA os mesmos 4 mm que a borda da frente recuou (17 -> 13), de modo que a
+// parede da frente sai identica a' da retangular: 14 graus com a vertical.
+// Nao da' para simplesmente centrar o boss na quadrada. Centrado (boss_x = 0),
+// a folga atras do conector, medida no eixo, cai para 7,9 mm — menos que a
+// traseira de um SMA de painel com o rabicho. Com 4,0 ficam 12,7 mm.
+boss_x      = square ? 4.0 : 8.0;
 
 // ---------------- corpo ----------------
 wall        = 2.5;
-base_l      = 34.0 + grow_xy; // no sentido da inclinacao (X)
 base_w      = 26.0 + grow_xy;
+base_l      = square ? base_w : 34.0 + grow_xy;  // no sentido da inclinacao (X)
 base_r      = 7.0;    // raio de canto da planta
 base_h      = 3.0;    // trecho reto (vertical) na base, antes da rampa
 
@@ -73,8 +84,12 @@ seal_band   = 1.00;   // offset onde comeca o primeiro anel; tudo para dentro
 groove_w    = 0.90;
 groove_d    = 0.90;
 ring_gap    = 1.10;   // contato entre os dois aneis
-rad_n       = xl ? 20 : 12;  // canais radiais (do 1o anel para a borda);
-                      // acompanham o perimetro, ~10,5 mm de passo nas duas versoes
+// Canais radiais, do 1o anel para a borda. O numero acompanha o perimetro
+// para manter o passo em ~10,5 mm em qualquer variante (e par, para a peca
+// nao ficar assimetrica): 12 na compacta, 20 na XL, 10 na quadrada.
+rad_pitch   = 10.5;
+rad_peri    = 2*((base_l-2*base_r)+(base_w-2*base_r)) + 2*PI*(base_r+3);
+rad_n       = 2*round(rad_peri/(2*rad_pitch));
 rad_w       = 0.90;
 // Balanco da face de colagem (925 mm2 no total): 73% de contato direto e 27% de
 // ranhura (~225 mm3 de PU alojado) — bem mais conservador que os 39/46 do pezinho,
@@ -95,13 +110,14 @@ inner_w    = base_w - 2*wall;
 top_max    = top_h + (boss_d/2)*sin(tilt);
 band_w     = wall + skirt_w;       // largura total da face de colagem
 
-echo(str("capuz ",xl?"XL":"compacto",": planta ",base_l," x ",base_w," + saia -> ",
+echo(str("capuz ",xl?"XL":(square?"quadrado":"compacto"),": planta ",base_l," x ",base_w," + saia -> ",
          base_l+2*skirt_w," x ",base_w+2*skirt_w," mm"));
 echo(str("altura total ",top_max," mm; centro da face do SMA a ",top_h," mm"));
 echo(str("face do SMA: Dia ",boss_d,", parede ",face_t," -> hex de ",sma_hex_dep,
          " por dentro + ",face_t-sma_hex_dep," mm de furo redondo"));
 echo(str("sextavado: entre faces ",sma_hex_af,"  circunscrito ",sma_hex_cc));
 echo(str("area interna (onde furar a caixa): ",inner_l," x ",inner_w," mm"));
+echo(str("canais radiais: ",rad_n," (passo de ",rad_peri/rad_n," mm)"));
 echo(str("face de colagem: faixa de ",band_w," mm, sendo ",wall+seal_band,
          " mm de contato continuo antes do 1o anel"));
 
