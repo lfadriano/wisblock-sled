@@ -51,7 +51,9 @@ fix_cs_h  = 2.0;
 // NAO contempla esse recuo; a bandeja contempla.
 // Estes recortes engolem os 4 furos perifericos que a laranja tem no meio das
 // abas, portanto a bandeja nao os reproduz.
-col_d     = 9.40;
+col_slack = 1.00;   // alargamento sobre a medida da coluna (9,4 ficou apertado).
+                    // Vale so para a LARGURA - a profundidade de 8,0 esta boa.
+col_d     = 9.40 + col_slack;
 col_prof  = 8.00;   // termina RETO na borda (90 graus) e boleado so no fundo
 col_r     = col_d/2; // 4,85 = metade da largura -> o fundo e' um semicirculo
                     // perfeito. Com um raio menor (ex. 4,0) sobraria um trecho
@@ -198,7 +200,9 @@ module col_slot2d(){
     }
 }
 module col_cuts()
-    for(a=[[0,L/2,0], [L/2,0,-90], [L/2,L,90], [L,L/2,180]])
+    // o slot entra na direcao +X, entao cada borda precisa da rotacao que aponta
+    // para DENTRO: y=0 pede +90 e y=L pede -90 (estavam trocadas)
+    for(a=[[0,L/2,0], [L/2,0,90], [L/2,L,-90], [L,L/2,180]])
         translate([a[0],a[1],-1]) rotate([0,0,a[2]])
             linear_extrude(grid_t+2+bat_rail) col_slot2d();
 

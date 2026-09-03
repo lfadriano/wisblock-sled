@@ -132,7 +132,8 @@ placa laranja 2,5 + bandeja 3,0 + torre 6,0 = **11,5 mm**.
 | `grid_gap` | 0,85 | folga da bandeja em relação à placa, por lado |
 | `rec_major` / `rec_minor` | 13,20 / 22,25 | recuo dos recortes dos cantos |
 | `corner_r` | 7,0 | meia lua do canto do recorte |
-| `col_d` / `col_prof` | 9,4 / 8,0 | slot das colunas: reto na borda, fundo em semicírculo R4,7 |
+| `col_slack` | 1,0 | alargamento do slot sobre a medida da coluna |
+| `col_d` / `col_prof` | 10,4 / 8,0 | slot: reto na borda, fundo em semicírculo R5,2 |
 | `fix_span` | 59,6 | quadrado de fixação da caixa |
 | `tower_h` | 6,0 | altura livre sob a PCB |
 | `tower_id` | 2,30 | rosca direta M2.5 |
