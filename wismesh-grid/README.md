@@ -17,18 +17,19 @@ Tamanho: **98,1 × 98,1 × 9 mm** (bandeja de 3 mm + torres de 6 mm).
 O contorno **não é um quadrado**. A caixa tem estruturas que vão do fundo até a
 tampa, e a placa precisa desviar de duas famílias delas:
 
-- **Pilares dos cantos** → os 4 cantos são recortados, deixando a peça em forma de
-  cruz com 4 abas retas. Recuo de **8,1 mm** nas bordas de X e **17,1 mm** nas de Y,
-  resultando em abas de 81,9 e 63,9 mm.
-- **Colunas do meio de cada aba** → 4 colunas de 9,7 mm de largura que exigem
-  **9,3 mm** de recuo. Um círculo de Ø9,7 com centro a 4,45 mm da borda produz
-  exatamente essa profundidade e essa largura ("quase meia lua").
+- **Pilares dos cantos** → os 4 cantos são recortados, deixando 4 abas retas. Recuo
+  de **13,20 mm** em Y e **22,25 mm** em X, com o canto do recorte em **meia lua
+  R7** (não em ângulo reto). Isso reproduz as abas medidas: 73,4 e 55,3 na placa.
+- **Colunas do meio de cada aba** → 4 colunas de 9,7 mm de largura, com **8,3 mm**
+  de profundidade. O slot termina **reto (90°) na borda** e é boleado só no fundo.
 
 O contorno é construído **parametricamente a partir dos recuos**, não copiado do
-`placa_laranja_gabarito.stl` — ver a divergência abaixo. Também não leva boleado por
-offset: medi que qualquer par `offset()/offset()` desloca o recuo (+2,00 mm usando
-`delta`, +0,46 usando `r`), e aqui a cota é o que desvia dos pilares, então ela
-manda. Os recuos saem exatos em 8,10 e 17,10.
+`placa_laranja_gabarito.stl` — ver a divergência abaixo.
+
+Os recuos vieram das **abas medidas no paquímetro** (73,4 e 55,3 num lado de 99,8),
+que são auto-consistentes: (99,8 − 73,4)/2 = 13,20 e (99,8 − 55,3)/2 = 22,25.
+Conferido no mesh, as abas saem exatas em **71,70** e **53,60** (a bandeja é 1,7 mm
+menor que a placa).
 
 > **Os recortes das colunas engolem os 4 furos periféricos** que a placa laranja tem
 > no meio de cada aba (a 3,125 mm da borda, para as travas de pressão). Eles caem
@@ -41,18 +42,18 @@ Vale registrar, porque custou algumas idas e voltas:
 | | `placa_laranja_gabarito.stl` | Placa física (paquímetro) |
 |---|---|---|
 | Lado | **90,000** (exato, bbox 4,875–94,875) | **99,8** |
-| Recuo das abas | 8,000 / 16,750 | **8,1 / 17,1** |
-| Span dos furos centrais | 64,000 | 64 (não muda — é a caixa que manda) |
-| Recorte das colunas | **ausente** | 9,3 de profundidade |
+| Recuo das abas | 8,000 / 16,750 | **13,20 / 22,25** |
+| Canto do recorte | ângulo reto | **meia lua R7** |
+| Span dos furos centrais | 64,000 | **59,60** |
+| Recorte das colunas | **ausente** | 8,3 de profundidade |
 
-O arquivo é um **gabarito reduzido**, não a placa. Os **recuos** das abas coincidem
-nos dois (8,0 vs 8,1 e 16,75 vs 17,1), e é por isso que são a medida boa. Já as
-"abas de 74 e 56 mm" que apareciam na documentação em texto foram calculadas com
-lado 90,2 — correto para o gabarito, errado para a placa.
+O arquivo **não representa a placa**: além do lado, divergem os recuos, o span dos
+furos, o formato do canto e a existência dos recortes das colunas. Tudo o que a
+bandeja usa hoje vem de medição no paquímetro.
 
-Outras duas coisas medidas no STL que não se sustentam na peça física: a assimetria
-de 0,125 mm no padrão de furos (artefato de modelagem — na placa é simétrico) e a
-ausência do recuo das colunas.
+Uma nota sobre as três medidas do span dos furos: a distância direta entre eles dá
+59,6, a diagonal de 83,4 implica 58,97 e o recuo de 19,7 implica 60,4 — 1,43 mm de
+espalhamento. Usei a **medida direta**, por ser a mais confiável das três.
 
 ## Gabarito de furos do conjunto WisMesh
 
@@ -103,10 +104,10 @@ As guias laterais têm **6 mm** de altura, porque um pack estreito e alto tomba 
 
 ## Fixação
 
-4 furos Ø3,6 em quadrado de **64 × 64 mm**, com recuo de 17,05 (simétrico).
+4 furos Ø3,6 em quadrado de **59,6 × 59,6 mm**, com recuo de 19,25 (simétrico).
 
-Os de y = 17,05 ficam sob o pack, então levam **rebaixo de 6,2 × 2,0 mm**: a cabeça
-do parafuso fica sob a superfície e não empurra a célula. Os de y = 81,05 ficam
+Os de y = 19,25 ficam sob o pack, então levam **rebaixo de 6,2 × 2,0 mm**: a cabeça
+do parafuso fica sob a superfície e não empurra a célula. Os de y = 78,85 ficam
 livres acima da PCB.
 
 ## Ordem de montagem
@@ -129,9 +130,10 @@ placa laranja 2,5 + bandeja 3,0 + torre 6,0 = **11,5 mm**.
 |---|---|---|
 | `plate_side` | 99,8 | lado da placa física, medido no paquímetro |
 | `grid_gap` | 0,85 | folga da bandeja em relação à placa, por lado |
-| `rec_major` / `rec_minor` | 8,1 / 17,1 | recuo dos recortes dos cantos |
-| `col_d` / `col_prof` | 9,7 / 9,3 | largura e recuo das colunas do meio das abas |
-| `fix_span` | 64,0 | quadrado de fixação da caixa |
+| `rec_major` / `rec_minor` | 13,20 / 22,25 | recuo dos recortes dos cantos |
+| `corner_r` | 7,0 | meia lua do canto do recorte |
+| `col_d` / `col_prof` | 9,7 / 8,3 | slot das colunas: reto na borda, boleado no fundo |
+| `fix_span` | 59,6 | quadrado de fixação da caixa |
 | `tower_h` | 6,0 | altura livre sob a PCB |
 | `tower_id` | 2,30 | rosca direta M2.5 |
 | `n_cell` | 9 | vãos por lado; o vão (7,46 mm) é calculado para fechar exato |

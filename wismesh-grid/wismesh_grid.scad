@@ -21,8 +21,13 @@ plate_side= 99.8;   // MEDIDO no paquimetro (o STL do gabarito da 90,000)
 // texto foram calculadas com lado 90,2, que era o lado do gabarito e nao da placa.
 // Aplicados a partir da borda da BANDEJA, que e' 0,85 menor que a placa por lado,
 // sobra 0,85 de folga extra para os pilares.
-rec_major = 8.10;   // recuo nas bordas de X (aba maior)
-rec_minor = 17.10;  // recuo nas bordas de Y (aba menor)
+// Recuos derivados das ABAS medidas no paquimetro (73,4 e 55,3 num lado de 99,8),
+// que sao auto-consistentes. As "profundidades" de 20 e 13,7 do texto nao
+// reproduzem essas abas e aparecem trocadas em relacao a estes recuos - o
+// boleado R7 no fundo do recorte explica a diferenca de leitura.
+rec_major = 13.20;  // recuo em Y  -> aba maior nas bordas de X
+rec_minor = 22.25;  // recuo em X  -> aba menor nas bordas de Y
+corner_r  = 7.0;    // meia lua do canto do recorte (nao e' angulo reto)
 grid_gap  = 0.85;   // folga da bandeja em relacao a placa, por lado
 
 // ---------------- bandeja ----------------
@@ -31,7 +36,9 @@ grid_t    = 3.0;
 // (sem boleado: ver nota em plate2d)
 
 // ---------------- fixacao (pilares da caixa) ----------------
-fix_span  = 64.0;   // span centro a centro, simetrico
+fix_span  = 59.6;   // span centro a centro, MEDIDO entre furos (a diagonal de
+                    // 83,4 daria 58,97 e o recuo de 19,7 daria 60,4; usei a
+                    // medida direta, que e' a mais confiavel das tres)
 fix_d     = 3.60;   // folga p/ M3 passante
 fix_pad   = 2.0;    // reforco macico em volta do furo
 fix_cs    = 6.2;    // rebaixo p/ a cabeca (o furo de baixo fica sob o pack)
@@ -45,7 +52,7 @@ fix_cs_h  = 2.0;
 // Estes recortes engolem os 4 furos perifericos que a laranja tem no meio das
 // abas, portanto a bandeja nao os reproduz.
 col_d     = 9.70;
-col_prof  = 9.30;
+col_prof  = 8.30;   // termina RETO na borda (90 graus) e boleado so no fundo
 
 // ---------------- conjunto WisMesh ----------------
 pcb_l     = 81.0;   // sanduiche RAK19007 + RAK3400 + RAK13302
@@ -86,30 +93,39 @@ $fn = 64;
 
 rec_M = rec_major;
 rec_m = rec_minor;
-tab_major = L - 2*rec_M;     // aba resultante
-tab_minor = L - 2*rec_m;
+tab_major = L - 2*rec_M;     // aba nas bordas de X
+tab_minor = L - 2*rec_m;     // aba nas bordas de Y
 fix_c = (L - fix_span)/2;    // recuo dos furos de fixacao
-col_c = col_prof - col_d/2;  // centro do recorte da coluna, da borda
+
 
 util   = L - 2*edge_w;
 cell_w = (util - (n_cell+1)*bar_w) / n_cell;
 pitch  = bar_w + cell_w;
 
 echo(str("bandeja ",L," x ",L," x ",grid_t," (placa ",plate_side," menos ",grid_gap," por lado)"));
-echo(str("recuos: X ",rec_M," / Y ",rec_m," -> abas de ",tab_major," e ",tab_minor));
+echo(str("recuos: Y ",rec_M," / X ",rec_m," -> abas de ",tab_major," e ",tab_minor,", canto R",corner_r));
 echo(str("furos de fixacao: span ",fix_span,", recuo ",fix_c," simetrico"));
-echo(str("recortes das colunas: 4 x Dia ",col_d,", centro a ",col_c," da borda, profundidade ",col_prof));
+echo(str("colunas: slot ",col_d," de largura x ",col_prof," de profundidade, reto na borda"));
 echo(str("PCB ocupa x ",pcb_x,"..",pcb_x+pcb_l,"   y ",pcb_y,"..",pcb_y+pcb_w));
 echo(str("pack ocupa x ",bat_x,"..",bat_x+bat_l,"   y ",bat_y,"..",bat_y+bat_w));
 echo(str("grade: ",n_cell,"x",n_cell," vaos de ",cell_w," entre barras de ",bar_w));
 echo(str("altura livre sob a PCB, do fundo do case: ",2.5+grid_t+tower_h));
 
 // ============================ 2D ====================================
-// contorno em cruz: a aba maior nas bordas de X, a menor nas de Y
+// recorte de canto: retangulo rec_minor x rec_major com o canto INTERNO
+// boleado em meia lua R7. Os outros tres cantos ficam fora da peca.
+module corner_notch()
+    translate([-20,-20])
+        offset(r=corner_r) offset(delta=-corner_r)
+            square([rec_minor+20, rec_major+20]);
+
 module cross2d()
-    union(){
-        translate([0, rec_M]) square([L, tab_major]);
-        translate([rec_m, 0]) square([tab_minor, L]);
+    difference(){
+        square([L, L]);
+        corner_notch();
+        translate([L,0]) mirror([1,0]) corner_notch();
+        translate([0,L]) mirror([0,1]) corner_notch();
+        translate([L,L]) mirror([1,0]) mirror([0,1]) corner_notch();
     }
 
 // Sem boleado de offset: qualquer par offset()/offset() desloca o recuo (medi
@@ -132,10 +148,6 @@ module fix_pos()
 
 module tower_pos()
     for(h=wis_holes) translate([pcb_x+h[0], pcb_y+h[1]]) children();
-
-module col_pos()
-    for(p=[[col_c, L/2], [L/2, col_c], [L/2, L-col_c], [L-col_c, L/2]])
-        translate(p) children();
 
 // ============================ 3D ====================================
 module tray()
@@ -170,8 +182,19 @@ module fix_holes()
         translate([0,0,grid_t-fix_cs_h]) cylinder(h=fix_cs_h+1, d1=fix_d, d2=fix_cs);
     }
 
+// slot: laterais retas ate a borda (90 graus) e fundo em arco
+module col_slot2d(){
+    r = col_d/2;
+    d = col_prof - r;          // centro do arco
+    union(){
+        translate([-2, -r]) square([d+2, col_d]);
+        translate([d, 0]) circle(r=r, $fn=72);
+    }
+}
 module col_cuts()
-    col_pos() translate([0,0,-1]) cylinder(h=grid_t+2+bat_rail, d=col_d, $fn=72);
+    for(a=[[0,L/2,0], [L/2,0,-90], [L/2,L,90], [L,L/2,180]])
+        translate([a[0],a[1],-1]) rotate([0,0,a[2]])
+            linear_extrude(grid_t+2+bat_rail) col_slot2d();
 
 // ============================ MONTAGEM ==============================
 difference(){
