@@ -1,6 +1,6 @@
 # LoRa Node Enclosures
 
-Two 3D-printed carriers for outdoor LoRa nodes, both parametric OpenSCAD:
+Carriers and accessories for outdoor LoRa nodes, all parametric OpenSCAD:
 
 - **[Baton Node](#lora-baton-node--40-mm-pvc)** (this page) — tubular node inside a
   40 mm PVC pipe.
@@ -11,6 +11,10 @@ Two 3D-printed carriers for outdoor LoRa nodes, both parametric OpenSCAD:
 - **[WisMesh Foot](wismesh-foot/)** — a single PU-glued standoff, as a lighter
   alternative to the tray: glue six of them straight onto the orange plate and
   place the assembly wherever you like.
+- **[SMA Hood](sma-hood/)** — a PU-glued hood that carries the panel-mount SMA
+  connector to a **45° face** on the outside of a sealed box, in two sizes. Fully
+  closed, no screws, no side openings: a grooved skirt does the holding and the
+  sealing.
 
 ---
 

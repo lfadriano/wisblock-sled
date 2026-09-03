@@ -1,0 +1,184 @@
+// =====================================================================
+//  SMA Hood — capuz de antena a 45 graus, colado com PU
+//
+//  Cobre um furo feito na parede externa da caixa hermetica e leva o
+//  conector SMA femea de painel para uma face inclinada a 45 graus. O
+//  pigtail sobe de dentro da caixa, atravessa o furo e e' rosqueado na
+//  parede superior do capuz; a antena fica a 45 graus, sem cotovelo e
+//  sem adaptador.
+//
+//  A peca e' TODA FECHADA: unica abertura e' o furo do SMA na face
+//  inclinada. Embaixo e' vazada (a cavidade fica sobre o furo da caixa)
+//  e as laterais nao tem furo nenhum — nada de parafuso, a fixacao e'
+//  so' de cola PU pela saia.
+//
+//  Referencia de forma: babyape-ii-vtx-sma-mount (holder de VTX de FPV),
+//  sem os dois olhais de M3.
+//
+//  ATENCAO: depois de colado, a cavidade do capuz passa a fazer parte do
+//  volume interno da caixa (elas se comunicam pelo furo do pigtail). A
+//  estanqueidade do conjunto passa a depender da vedacao sob a arruela
+//  do SMA — mesma tecnica do cap do Baton Node: PU sob a arruela.
+// =====================================================================
+
+// ---------------- variante de tamanho ----------------
+// Duas versoes da MESMA peca, saindo deste mesmo arquivo:
+//   xl = false -> compacta,  46 x 38 x 24,7 mm (com a saia)
+//   xl = true  -> 10 mm mais alta e 20 mm mais larga na planta,
+//                 66 x 58 x 34,7 mm, abertura de 49 x 41 embaixo.
+// A XL existe por um motivo de montagem: com a abertura de 49 x 41 e mais
+// 10 mm de pe direito, o dedo entra por baixo e segura o corpo do conector
+// enquanto se aperta a porca do lado de fora. Na compacta (29 x 21) da' para
+// enfiar so' a ponta do dedo.
+//
+//   openscad -D xl=true -o sma_hood_xl.stl sma_hood.scad
+xl          = false;
+grow_xy     = xl ? 20.0 : 0.0;   // acrescimo na planta, nos dois sentidos
+grow_h      = xl ? 10.0 : 0.0;   // acrescimo na altura
+
+// ---------------- conector (cotas medidas, as mesmas do wisblock_sled) --
+sma_hole_d  = 6.50;   // furo da rosca
+sma_hex_af  = 8.41;   // sextavado do conector, ENTRE FACES
+sma_hex_dep = 2.00;   // profundidade do rebaixo sextavado (fica por DENTRO)
+sma_cham    = 0.50;   // chanfro de entrada, na face de fora
+face_t      = 3.00;   // espessura da parede no furo do SMA
+
+// ---------------- inclinacao e boss ----------------
+tilt        = 45;     // graus em relacao a' superficie colada
+boss_d      = 16.0;   // Dia da face plana onde a arruela e a porca assentam
+boss_len    = 8.0;    // comprimento do cilindro do boss, ao longo do eixo
+top_h       = 19.0 + grow_h;  // altura do CENTRO da face do SMA acima da caixa
+boss_x      = 8.0;    // deslocamento do eixo no sentido em que a antena aponta
+
+// ---------------- corpo ----------------
+wall        = 2.5;
+base_l      = 34.0 + grow_xy; // no sentido da inclinacao (X)
+base_w      = 26.0 + grow_xy;
+base_r      = 7.0;    // raio de canto da planta
+base_h      = 3.0;    // trecho reto (vertical) na base, antes da rampa
+
+// ---------------- saia de colagem ----------------
+skirt_w     = 6.0;    // quanto a saia avanca alem da parede
+skirt_t     = 2.6;    // espessura junto a' parede
+skirt_e     = 2.0;    // espessura na ponta (a saia e' uma rampa)
+skirt_ch    = 0.6;    // chanfro na aresta inferior externa
+
+// ---------------- ranhuras para o PU ----------------
+// Mesma logica do WisMesh Foot: o PU cura dentro do sulco e trabalha como
+// rebite; os canais radiais deixam o excesso escapar em vez de formar bolha.
+// A diferenca aqui e' que a junta tambem VEDA: por isso a faixa mais interna
+// fica continua, sem nenhuma ranhura cruzando-a.
+seal_band   = 1.00;   // offset onde comeca o primeiro anel; tudo para dentro
+                      // disso e' contato continuo (a barreira de agua)
+groove_w    = 0.90;
+groove_d    = 0.90;
+ring_gap    = 1.10;   // contato entre os dois aneis
+rad_n       = xl ? 20 : 12;  // canais radiais (do 1o anel para a borda);
+                      // acompanham o perimetro, ~10,5 mm de passo nas duas versoes
+rad_w       = 0.90;
+// Balanco da face de colagem (925 mm2 no total): 73% de contato direto e 27% de
+// ranhura (~225 mm3 de PU alojado) — bem mais conservador que os 39/46 do pezinho,
+// porque esta junta cola, VEDA e ainda segura o momento da antena.
+
+// ---------------- visualizacao ----------------
+show_antenna = false;  // fantasma da antena, so' para conferir a folga
+ant_d        = 10.0;
+ant_l        = 60.0;
+
+$fn = 96;
+
+// =====================================================================
+
+sma_hex_cc = sma_hex_af/cos(30);   // Dia circunscrito do sextavado
+inner_l    = base_l - 2*wall;
+inner_w    = base_w - 2*wall;
+top_max    = top_h + (boss_d/2)*sin(tilt);
+band_w     = wall + skirt_w;       // largura total da face de colagem
+
+echo(str("capuz ",xl?"XL":"compacto",": planta ",base_l," x ",base_w," + saia -> ",
+         base_l+2*skirt_w," x ",base_w+2*skirt_w," mm"));
+echo(str("altura total ",top_max," mm; centro da face do SMA a ",top_h," mm"));
+echo(str("face do SMA: Dia ",boss_d,", parede ",face_t," -> hex de ",sma_hex_dep,
+         " por dentro + ",face_t-sma_hex_dep," mm de furo redondo"));
+echo(str("sextavado: entre faces ",sma_hex_af,"  circunscrito ",sma_hex_cc));
+echo(str("area interna (onde furar a caixa): ",inner_l," x ",inner_w," mm"));
+echo(str("face de colagem: faixa de ",band_w," mm, sendo ",wall+seal_band,
+         " mm de contato continuo antes do 1o anel"));
+
+// planta da parede externa, dilatada/erodida de o
+module outline(o=0)
+    offset(r=o) offset(r=base_r)
+        square([base_l-2*base_r, base_w-2*base_r], center=true);
+
+// referencial do SMA: origem no CENTRO DA FACE, +Z saindo pela antena
+module on_axis(){ translate([boss_x,0,top_h]) rotate([0,90-tilt,0]) children(); }
+
+module body(){
+    hull(){
+        linear_extrude(base_h) outline(0);
+        on_axis() translate([0,0,-boss_len]) cylinder(h=boss_len, d=boss_d);
+    }
+}
+
+// cavidade: os mesmos geradores erodidos de wall, e aberta para baixo
+module cavity(){
+    hull(){
+        translate([0,0,-1]) linear_extrude(base_h-wall+1) outline(-wall);
+        on_axis() translate([0,0,-boss_len]) cylinder(h=boss_len-face_t, d=boss_d-2*wall);
+    }
+}
+
+module skirt(){
+    hull(){
+        linear_extrude(skirt_t) outline(0);
+        translate([0,0,skirt_ch]) linear_extrude(skirt_e-skirt_ch) outline(skirt_w);
+        linear_extrude(skirt_ch) outline(skirt_w-skirt_ch);
+    }
+}
+
+module sma_cuts(){
+    on_axis(){
+        // furo passante da rosca
+        translate([0,0,-face_t-12]) cylinder(h=face_t+12.01, d=sma_hole_d);
+        // chanfro de entrada, na face de fora
+        translate([0,0,-sma_cham]) cylinder(h=sma_cham+0.01, d1=sma_hole_d, d2=sma_hole_d+2*sma_cham);
+        // rebaixo sextavado, aberto para DENTRO: trava o corpo do conector
+        // enquanto se aperta a porca do lado de fora
+        translate([0,0,-face_t-12]) cylinder(h=12+sma_hex_dep, d=sma_hex_cc, $fn=6);
+    }
+}
+
+// faixa 2D entre dois offsets da planta
+module band(a,b) difference(){ outline(b); outline(a); }
+
+module glue_grooves(){
+    r1 = seal_band;                       // 1o anel
+    r2 = seal_band + groove_w + ring_gap; // 2o anel
+    translate([0,0,-0.01]) linear_extrude(groove_d+0.01){
+        band(r1, r1+groove_w);
+        band(r2, r2+groove_w);
+        // canais radiais: do 1o anel para fora, atravessando a borda
+        intersection(){
+            band(r1, skirt_w+1);
+            union(){
+                for(i=[0:rad_n-1])
+                    rotate([0,0,i*360/rad_n])
+                        translate([-rad_w/2,0]) square([rad_w, base_l]);
+            }
+        }
+    }
+}
+
+module sma_hood(){
+    difference(){
+        union(){ body(); skirt(); }
+        cavity();
+        sma_cuts();
+        glue_grooves();
+    }
+}
+
+sma_hood();
+
+if(show_antenna)
+    %on_axis() cylinder(h=ant_l, d=ant_d);
