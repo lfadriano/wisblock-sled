@@ -20,7 +20,7 @@ tampa, e a placa precisa desviar de duas famílias delas:
 - **Pilares dos cantos** → os 4 cantos são recortados, deixando 4 abas retas. Recuo
   de **13,20 mm** em Y e **22,25 mm** em X, com o canto do recorte em **meia lua
   R7** (não em ângulo reto). Isso reproduz as abas medidas: 73,4 e 55,3 na placa.
-- **Colunas do meio de cada aba** → 4 colunas de 9,7 mm de largura, com **8,3 mm**
+- **Colunas do meio de cada aba** → 4 colunas de 9,4 mm de largura, com **8,3 mm**
   de profundidade. O slot termina **reto (90°) na borda** e é boleado só no fundo.
 
 O contorno é construído **parametricamente a partir dos recuos**, não copiado do
@@ -45,7 +45,7 @@ Vale registrar, porque custou algumas idas e voltas:
 | Recuo das abas | 8,000 / 16,750 | **13,20 / 22,25** |
 | Canto do recorte | ângulo reto | **meia lua R7** |
 | Span dos furos centrais | 64,000 | **59,60** |
-| Recorte das colunas | **ausente** | 8,3 de profundidade |
+| Recorte das colunas | **ausente** | 8,0 de profundidade |
 
 O arquivo **não representa a placa**: além do lado, divergem os recuos, o span dos
 furos, o formato do canto e a existência dos recortes das colunas. Tudo o que a
@@ -132,7 +132,7 @@ placa laranja 2,5 + bandeja 3,0 + torre 6,0 = **11,5 mm**.
 | `grid_gap` | 0,85 | folga da bandeja em relação à placa, por lado |
 | `rec_major` / `rec_minor` | 13,20 / 22,25 | recuo dos recortes dos cantos |
 | `corner_r` | 7,0 | meia lua do canto do recorte |
-| `col_d` / `col_prof` | 9,7 / 8,3 | slot das colunas: reto na borda, boleado no fundo |
+| `col_d` / `col_prof` | 9,4 / 8,0 | slot das colunas: reto na borda, fundo em semicírculo R4,7 |
 | `fix_span` | 59,6 | quadrado de fixação da caixa |
 | `tower_h` | 6,0 | altura livre sob a PCB |
 | `tower_id` | 2,30 | rosca direta M2.5 |

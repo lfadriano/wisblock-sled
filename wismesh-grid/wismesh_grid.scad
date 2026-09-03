@@ -51,8 +51,11 @@ fix_cs_h  = 2.0;
 // NAO contempla esse recuo; a bandeja contempla.
 // Estes recortes engolem os 4 furos perifericos que a laranja tem no meio das
 // abas, portanto a bandeja nao os reproduz.
-col_d     = 9.70;
-col_prof  = 8.30;   // termina RETO na borda (90 graus) e boleado so no fundo
+col_d     = 9.40;
+col_prof  = 8.00;   // termina RETO na borda (90 graus) e boleado so no fundo
+col_r     = col_d/2; // 4,85 = metade da largura -> o fundo e' um semicirculo
+                    // perfeito. Com um raio menor (ex. 4,0) sobraria um trecho
+                    // reto no meio do fundo e o raio ficaria so nos cantos.
 
 // ---------------- conjunto WisMesh ----------------
 pcb_l     = 81.0;   // sanduiche RAK19007 + RAK3400 + RAK13302
@@ -105,7 +108,7 @@ pitch  = bar_w + cell_w;
 echo(str("bandeja ",L," x ",L," x ",grid_t," (placa ",plate_side," menos ",grid_gap," por lado)"));
 echo(str("recuos: Y ",rec_M," / X ",rec_m," -> abas de ",tab_major," e ",tab_minor,", canto R",corner_r));
 echo(str("furos de fixacao: span ",fix_span,", recuo ",fix_c," simetrico"));
-echo(str("colunas: slot ",col_d," de largura x ",col_prof," de profundidade, reto na borda"));
+echo(str("colunas: slot ",col_d," x ",col_prof,", reto na borda, cantos do fundo R",col_r));
 echo(str("PCB ocupa x ",pcb_x,"..",pcb_x+pcb_l,"   y ",pcb_y,"..",pcb_y+pcb_w));
 echo(str("pack ocupa x ",bat_x,"..",bat_x+bat_l,"   y ",bat_y,"..",bat_y+bat_w));
 echo(str("grade: ",n_cell,"x",n_cell," vaos de ",cell_w," entre barras de ",bar_w));
@@ -182,13 +185,16 @@ module fix_holes()
         translate([0,0,grid_t-fix_cs_h]) cylinder(h=fix_cs_h+1, d1=fix_d, d2=fix_cs);
     }
 
-// slot: laterais retas ate a borda (90 graus) e fundo em arco
+// slot: laterais retas ate a borda (90 graus) e cantos do fundo boleados em col_r
 module col_slot2d(){
-    r = col_d/2;
-    d = col_prof - r;          // centro do arco
+    d   = col_prof - col_r;        // onde comeca o boleado
+    off = col_d/2 - col_r;         // deslocamento dos centros dos arcos
     union(){
-        translate([-2, -r]) square([d+2, col_d]);
-        translate([d, 0]) circle(r=r, $fn=72);
+        translate([-2, -col_d/2]) square([d+2, col_d]);
+        hull(){
+            translate([d,  off]) circle(r=col_r, $fn=72);
+            translate([d, -off]) circle(r=col_r, $fn=72);
+        }
     }
 }
 module col_cuts()
