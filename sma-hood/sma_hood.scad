@@ -101,15 +101,29 @@ assert(back_gain >= 0 && back_gain <= skirt_w, "back_gain tem que ficar entre 0 
 // alto dela o teto sai reto para o boss. Sem isso a rampa comeca na propria
 // aresta da base e come' a parte de cima da cavidade.
 //
-// back_h_max e' a altura em que esse teto sai a 45 graus, ou seja PARALELO ao
-// eixo da antena — e' o valor bom por dois motivos ao mesmo tempo: 45 graus e' o
-// limite auto-suportado (o teto e' a face de baixo de um vao), e um teto
-// paralelo ao eixo deixa de atravessar o corredor por onde saem a traseira do
-// conector e o cabo, que descem a 45 graus. Subir mais que isso deita o teto
-// (9 mm ja' da' 42 graus) e passa a pedir suporte na cavidade.
-back_h_max  = top_h + (boss_d/2 - (x_back + boss_x)*sin(tilt))/cos(tilt);
-back_wall_h = square ? back_h_max : 0;   // 0 = rampa desde a aresta da base
-back_slab   = 3.0;   // espessura do gerador da parede em pe'
+// Duas alturas fazem sentido, e a diferenca entre elas e' precisar de suporte:
+//
+//  back_h_45  = altura em que o teto sai a 45 graus, PARALELO ao eixo da antena.
+//               45 graus e' o limite auto-suportado, entao imprime sem suporte.
+//  back_h_top = sobe ate' o PONTO MAIS ALTO DO CONECTOR (o topo do boss). O teto
+//               vira uma face PLANA na mesma altura, a parede termina em 90 graus
+//               e a peca NAO fica mais alta — o boss ja' estava nessa cota. E' o
+//               maximo de cavidade que cabe no mesmo envelope, e cobra um vao
+//               horizontal no teto: precisa de suporte.
+//
+// O suporte aqui e' removivel sem drama, porque a peca e' vazada embaixo: ele
+// entra e sai pela propria abertura de colagem.
+back_h_45   = top_h + (boss_d/2 - (x_back + boss_x)*sin(tilt))/cos(tilt);
+back_h_top  = top_h + (boss_d/2)*sin(tilt);
+back_wall_h = square ? back_h_top : 0;   // 0 = rampa desde a aresta da base
+// Espessura do bloco que gera a parede em pe'. Tem que ser MAIOR que wall com
+// folga: o gerador da cavidade e' o mesmo bloco erodido de wall em todas as
+// direcoes, inclusive na face da frente. Com 3,0 o bloco erodido saia vazio (ou,
+// se a erosao da frente fosse esquecida, o canto de cima da cavidade encostava na
+// lateral inclinada do corpo e a parede caia para 1,4 mm). Com 2*wall + 3 sobram
+// 3 mm de bloco erodido e a parede fica nos 2,5 em todo o teto. Acima de 8 o
+// ganho de cavidade ja' e' de 2% e so' engorda a peca.
+back_slab   = 2*wall + 3.0;
 
 // ---------------- ranhuras para o PU ----------------
 // Mesma logica do WisMesh Foot: o PU cura dentro do sulco e trabalha como
@@ -158,8 +172,9 @@ if(back_gain > 0)
     echo(str("parede de tras avancada ",back_gain," mm; saia posterior ",back_skirt,
              " -> faixa colada de ",wall+back_skirt," mm naquele lado"));
 if(back_wall_h > 0)
-    echo(str("parede posterior em pe' ate' ",back_wall_h," mm (90 graus com a base);",
-             " teto a partir dali a 45 graus, paralelo ao eixo"));
+    echo(str("parede posterior em pe' ate' ",back_wall_h," mm (90 graus com a base)",
+             back_wall_h >= back_h_top-0.01 ? " = topo do boss: teto PLANO, pede suporte"
+                                           : str("; teto a 45 graus se <= ",back_h_45)));
 echo(str("canais radiais: ",rad_n," (passo de ",rad_peri/rad_n," mm)"));
 echo(str("face de colagem: faixa de ",band_w," mm na frente e nas laterais",
          back_gain>0 ? str(", ",wall+back_skirt," mm atras") : "",
@@ -185,7 +200,7 @@ module on_axis(){ translate([boss_x,0,top_h]) rotate([0,90-tilt,0]) children(); 
 module back_region(o=0)
     intersection(){
         outline(o);
-        translate([-x_back-o-1, -base_w]) square([back_slab+1, 2*base_w]);
+        translate([-x_back+o-1, -base_w]) square([back_slab+1, 2*base_w]);
     }
 
 module body(){
