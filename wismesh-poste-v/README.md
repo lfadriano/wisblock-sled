@@ -247,6 +247,35 @@ está identificado: um **prolongador de SMA de 35 mm** sobe a alimentação e jo
 chapa claramente para baixo dela (0,148 → 0,224 λ). Peça pequena, acrescentável
 depois, **sem mexer em mais nada** do conjunto.
 
+## Cupom de inserto — este projeto pede o HORIZONTAL
+
+![cupom](p_cup.png)
+
+O cupom do [`pu-rail`](../pu-rail/) tem os furos **verticais**, que é a condição
+daquela peça. Aqui não serve: **o suporte em L imprime deitado e o furo do inserto
+sai com o eixo paralelo ao leito.** Furo horizontal fatia em cordas, não em
+circunferências, e o topo sai em ponte — achatado e um pouco menor.
+
+`cupom_horizontal.scad` reproduz a condição real:
+
+| | |
+|---|---|
+| Eixo do furo | **7,5 mm** do leito = meio da espessura do suporte |
+| Altura da barra | **15 mm** = espessura do suporte |
+| Material acima da ponte | 4,6 mm, igual ao da peça |
+| Profundidade | 9,0 (8 do inserto + 1 de alívio) |
+| Barra | 78 × 18 × 15 |
+
+Cinco furos de 5,40 a 5,80 com **1 a 5 tracinhos** (1 traço = 5,40) e, na ponta, um
+furo **vertical** de 5,60 marcado com um **quadrado** — a referência. Se o vertical e
+o de 3 traços assentarem igual, a orientação não importa; se não, vale o horizontal.
+
+Imprima com o **mesmo material, mesma camada e mesmo perfil** do suporte.
+
+> O parafuso continua precisando de **2,5 mm de calço** sob a cabeça (chapa 1,5 +
+> arruela 1,0). O furo tem 9,0 e um M4 × 10 encostaria no fundo, empurrando o inserto
+> para fora — e você condenaria um furo bom.
+
 ## Ordem de montagem
 
 1. Assentar os insertos nos suportes (**furo validado no cupom** do `pu-rail`)
