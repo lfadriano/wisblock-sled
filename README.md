@@ -18,6 +18,12 @@ Carriers and accessories for outdoor LoRa nodes, all parametric OpenSCAD:
 - **[PU Rail](pu-rail/)** — a PU-glued spacer rail that sits between a sealed box and
   an aluminium plate: glued on one face, M4 heat-set inserts on the other, and
   dovetailed channels that key the adhesive instead of merely venting it.
+- **[WisMesh Pole Mount · box upright](wismesh-poste-v/)** — the arrangement that
+  actually got built: the enclosure stands **beside** the pole's top end, antenna
+  straight up off its upper face, solar plate cantilevered as a **15° awning** off the
+  front. A blind-bore cradle caps the 6 m tube and turns friction into a seat; a
+  light-coloured **printed hat** shades the top face (the hottest of all at 3° from
+  the equator) without putting metal near the antenna.
 - **[WisMesh Pole Mount](wismesh-poste/)** — the whole node on top of a 31.7 mm steel
   pole: a two-piece pole cradle that also caps the tube, and a pair of **wedge rails**
   that tilt the solar plate 15° while the box stays level, so the antenna rises
