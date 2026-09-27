@@ -20,9 +20,18 @@
 //  arranque — a 40 m/s a chapa inclinada gera ~45 N de sustentacao contra
 //  15 N de peso, entao sobram 30 N puxando para cima.
 //
-//  IMPRESSAO: vire de cabeca para baixo (print_ready ja' faz isso) — o
-//  teto do alojamento vai para o leito, o furo do poste abre para cima e
-//  nao ha' ponte nenhuma. Com bico a 240 C isso importa.
+//  IMPRESSAO: DEITADO sobre a face de particao (print_ready ja' faz isso).
+//  Nesta orientacao:
+//    - as ORELHAS de aperto assentam no leito. Em pe elas ficariam em
+//      balanco, blocos de 12 mm com nada embaixo
+//    - a altura cai de 110 para 33 mm: nada de peca alta e estreita
+//    - a placa de fixacao fica DEITADA, entao a flexao dela (peso da caixa
+//      e vento na chapa) trabalha DENTRO da camada, nao atravessando-a —
+//      o que importa com o bico limitado a 240 C
+//    - o alojamento do poste vira um ARCO auto-sustentado, que fecha
+//      progressivamente. Espere um pouco de barriga na chave do arco; nao
+//      atrapalha, porque quem aperta e' o parafuso e sobram 2 mm de folga
+//      entre as metades. Se ficar raspando, e' lixa
 //
 //    openscad -D half=0 -o berco_placa.stl   berco_vertical.scad
 //    openscad -D half=1 -o berco_contra.stl  berco_vertical.scad
@@ -128,6 +137,7 @@ module peca() difference(){
                 cylinder(h=plate_t+2, d=box_d);
 }
 
-// print_ready: vira de cabeca para baixo -> o teto do alojamento vai para o
-// leito, o furo do poste abre para cima, nenhuma ponte.
-if(print_ready) rotate([180,0,0]) peca(); else peca();
+// print_ready: deita sobre a face de particao. Rotacao oposta em cada
+// metade, porque elas ocupam lados opostos do plano.
+if(print_ready) translate([0,0,-y0]) rotate([(half==0) ? 90 : -90, 0, 0]) peca();
+else peca();

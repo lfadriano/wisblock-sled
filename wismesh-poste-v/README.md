@@ -189,7 +189,7 @@ estão orientadas para **a carga nunca atravessar camada**:
 | Peça | Orientação | Suporte |
 |---|---|---|
 | Suporte em L | **deitado de lado**, o perfil do L no plano do leito | não |
-| Berço | de cabeça para baixo, teto no leito, furo do poste para cima | não |
+| Berço | **deitado sobre a face de partição** | não |
 | Chapéu | de cabeça para baixo, teto no leito, pés para cima | não |
 
 No suporte em L a flexão do braço trabalha **dentro** da camada, e o canto interno do
@@ -198,14 +198,30 @@ importa.
 
 Os arquivos já saem na posição de impressão (`print_ready = true`).
 
-**Berço: use brim.** São 110 mm de altura sobre uma base de 116 × 33.
+### O berço vai deitado, não em pé
+
+Corrigido depois de olhar no fatiador. **Em pé as orelhas de aperto ficariam em
+balanço** — blocos de 12 mm com nada embaixo. Deitado sobre a face de partição:
+
+- as orelhas assentam no leito
+- a altura cai de **110 para 33 mm**
+- a placa de fixação fica deitada, então a flexão dela (peso da caixa e vento na
+  chapa) trabalha **dentro** da camada — que é o que importa com o bico em 240 °C
+- o alojamento do poste vira um **arco auto-sustentado**, fechando progressivamente
+
+Espere um pouco de barriga na chave do arco. Não atrapalha: quem aperta é o parafuso
+e sobram 2 mm de folga entre as metades. Se ficar raspando no tubo, é lixa.
+
+As duas metades cabem **no mesmo leito**: 116 + 80 = 196 mm de largura por 110 de
+profundidade, contra os 200 × 148 da CP2. É apertado — separar em duas impressões é
+mais seguro.
 
 Todas cabem na mesa da CP2 (200 × 148):
 
 | | dimensões |
 |---|---|
-| `berco_0.stl` | 116 × 33 × 110 |
-| `berco_1.stl` | 80 × 21 × 106 |
+| `berco_0.stl` | 116 × 110 × 33 |
+| `berco_1.stl` | 80 × 106 × 21 |
 | `suporte_L.stl` | 150 × 117 × 15 |
 | `chapeu.stl` | 140 × 78 × 18 |
 
