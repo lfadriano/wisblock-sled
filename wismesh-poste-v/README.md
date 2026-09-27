@@ -88,9 +88,42 @@ Cordão de silicone na junta de cima, onde o tubo encontra o berço: a folga anu
 | Seção na raiz | **34 × 15** → módulo resistente **2890 mm³** |
 | Seção na ponta | 15 × 15 |
 | Mísula no canto interno | 38 mm |
+| Alívio em treliça | 4 rasgos, banzos de 5, diagonais de 6, cantos R3 |
 | Tensão a 40 m/s | **0,64 MPa** |
 | Insertos M4 8×6 | a 45 e 150 mm ao longo da rampa |
 | Fixação na tampa | porca M4 aprisionada, bolsa lateral |
+
+### A treliça
+
+![suporte](p_sup.png)
+
+A alma de uma viga em balanço carrega pouca flexão — a tensão é máxima nas fibras
+extremas e **zero na linha neutra**. Tirar material do meio custa quase nada:
+
+| | maciço | com treliça |
+|---|---|---|
+| Tensão máxima | 0,65 MPa | **0,89 MPa** |
+| Cisalhamento na alma | 0,049 MPa | 0,14 MPa |
+| Volume | 90 112 mm³ | 82 021 mm³ (−9%) |
+
+Contra ~25 MPa do ASA a 60 °C: **fator 28 de folga**.
+
+**Não é pelo vento.** A silhueta do suporte inteiro dá 6 N a 40 m/s, então vazar
+metade economiza 3 N contra os 50 N da chapa — e ele fica na esteira dela. É por
+estética, material e tempo.
+
+Três coisas foram deliberadas:
+
+- **A raiz fica maciça** (y = 108 a 112 e 129 a 150). É onde o momento é máximo.
+- **Nenhum rasgo encosta num inserto.** O arquivo confere sozinho e imprime
+  `*** COLIDE COM RASGO ***` no console se alguém mexer nas cotas e criar o conflito.
+- **A mísula não leva rasgo.** O raio inscrito do triângulo dela é 10,9 mm: qualquer
+  recuo útil a colapsa, e ela é justamente quem reforça o canto.
+
+Cantos em **R3**, nunca vivos — canto vivo é iniciador de trinca em peça impressa.
+
+Os rasgos atravessam a espessura, que é a direção de construção: saem como furos
+verticais na impressão, sem ponte e sem suporte.
 
 **Porca aprisionada e não inserto:** o furo da tampa é Ø7,5 e o parafuso vem de dentro
 da caixa. A parede que sobraria em volta de um inserto de latão nesse diâmetro não

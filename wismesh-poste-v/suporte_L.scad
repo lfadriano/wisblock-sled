@@ -41,9 +41,41 @@ leg_z0   = -110.0;             // a perna desce ate' a base da caixa
 leg_z1   =    7.0;
 arm_len  = 150.0;              // alcance a partir do plano da tampa
 arm_d0   = 34.0;               // altura da secao na raiz
-arm_d1   = 15.0;               // altura da secao na ponta
+arm_d1   = 22.0;              // altura da secao na ponta (era 15: com a trelica
+                              // a alma precisa de altura para ter rasgo)
 gusset   = 38.0;               // misula no canto interno do L
 cham     = 0.4;
+
+// ---------------- alivio em trelica ----------------
+// A alma de uma viga em balanco carrega pouca flexao: a tensao e' maxima
+// nas fibras extremas e ZERO na linha neutra. Tirar material do meio custa
+// quase nada. Medido, com a chapa 230x185 a 40 m/s:
+//     macico ....... 0,65 MPa        trelica ...... 0,89 MPa
+//     cisalhamento   0,049 MPa            ->        0,14 MPa
+// contra ~25 MPa do ASA a 60 C: fator 28 de folga.
+//
+// NAO e' pelo vento. A silhueta do suporte inteiro da 6 N a 40 m/s, entao
+// vazar metade economiza 3 N contra os 50 N da chapa — e ele ainda fica na
+// esteira dela. E' por estetica, material e tempo.
+//
+// Os rasgos atravessam a espessura, que e' a direcao de construcao: saem
+// como furos verticais na impressao, sem ponte e sem suporte.
+truss    = true;
+tr_y0    = 150.0;   // a RAIZ fica macica (momento maximo) e o rasgo comeca
+tr_y1    = 228.0;   // DEPOIS do primeiro inserto, nunca em cima dele
+tr_n     = 3;       // vaos
+tr_fl    = 5.0;     // banzo superior e inferior
+tr_diag  = 6.0;     // largura das diagonais
+tr_r     = 3.0;     // raio dos cantos: canto vivo e' iniciador de trinca
+// vao TRASEIRO, entre a raiz e o primeiro inserto. Fica onde o momento e'
+// maior, entao foi conferido: a 40 m/s da 0,88 MPa contra ~25 do ASA quente.
+// Para em y=129 para deixar 5 mm de material antes do inserto (que ocupa
+// de ~134 a ~141 em y, contando a inclinacao de 15 graus e os 9 de furo).
+tr_tras  = true;
+tr_ty0   = 112.0;
+tr_ty1   = 129.0;
+// A misula NAO leva rasgo: o raio inscrito do triangulo e' 10,9 mm, entao
+// qualquer recuo util a colapsa — e ela e' justamente quem reforca o canto.
 
 // ---------------- fixacao da chapa ----------------
 ins_s    = [45.0, 150.0];      // posicao ao longo da RAMPA, da aresta de tras
@@ -69,7 +101,14 @@ function zbot(y) = ztop(y) - (arm_d0 + (arm_d1-arm_d0)*(y-lid_y-leg_t)/(arm_len-
 echo(str("suporte ",wid," de largura | perna z ",leg_z0," a ",leg_z1));
 echo(str("braco vai de y=",lid_y+leg_t," a y=",lid_y+arm_len));
 echo(str("secao na raiz ",arm_d0," x ",wid," -> modulo ",wid*arm_d0*arm_d0/6," mm3"));
-echo(str("tensao a 40 m/s (1,85 N.m por suporte): ",1850/(wid*arm_d0*arm_d0/6)," MPa"));
+echo(str("tensao na raiz a 40 m/s (1,89 N.m): ",1890/(wid*arm_d0*arm_d0/6)," MPa  (raiz fica MACICA)"));
+if(truss) for(i=[0:tr_n-1]) echo(str("  vao ",i+1,": y ",bay(i)[0]," a ",bay(i)[1]));
+// CONFERENCIA: um rasgo em cima de um inserto arruina a peca
+if(truss) for(sv=ins_s) let(yi = lid_y + sv*cos(ang), y0i = yi-2.9-9*sin(ang), y1i = yi+2.9)
+    echo(str("  inserto ocupa y ",y0i," a ",y1i,": ",
+        ((y1i>tr_y0-2 && y0i<tr_y1+2) || (tr_tras && y1i>tr_ty0-2 && y0i<tr_ty1+2))
+        ? "*** COLIDE COM RASGO ***" : "livre, ok"));
+if(truss && tr_tras) echo(str("  vao traseiro: y ",tr_ty0," a ",tr_ty1));
 for(s=ins_s) echo(str("  inserto a ",s," da aresta -> (y ",lid_y+s*cos(ang),", z ",-s*sin(ang),")"));
 
 // perfis no plano YZ, extrudados ao longo de X
@@ -81,6 +120,15 @@ MISULA = [[lid_y+leg_t, zbot(lid_y+leg_t)],
           [lid_y+leg_t, zbot(lid_y+leg_t)-gusset*0.9]];
 
 // a espessura fica CENTRADA em x=0 — os furos sao cotados a partir do eixo
+// linhas da alma, ja' descontados os banzos
+function wt(y) = ztop(y) - tr_fl;
+function wb(y) = zbot(y) + tr_fl;
+function bay(i) = [tr_y0 + i*(tr_y1-tr_y0)/tr_n, tr_y0 + (i+1)*(tr_y1-tr_y0)/tr_n];
+function tri_em(ya, yb, cima) = let(a=ya+tr_diag/2, c=yb-tr_diag/2, m=(ya+yb)/2)
+    cima ? [[a, wb(a)], [c, wb(c)], [m, wt(m)]]
+         : [[a, wt(a)], [c, wt(c)], [m, wb(m)]];
+function tri(i) = tri_em(bay(i)[0], bay(i)[1], i%2==1);
+
 module extrudaYZ(P, w)
     translate([-w/2,0,0]) rotate([0,90,0]) linear_extrude(w)
         polygon([ for(p=P) [-p[1], p[0]] ]);
@@ -100,6 +148,12 @@ module furo_inserto(s){
     }
 }
 
+// rasgo arredondado, extrudado por toda a espessura
+module rasgo(P)
+    translate([-wid/2-1,0,0]) rotate([0,90,0]) linear_extrude(wid+2)
+        offset(r=tr_r) offset(delta=-tr_r)
+            polygon([ for(p=P) [-p[1], p[0]] ]);
+
 module peca() difference(){
     union(){
         extrudaYZ(PERNA,  wid);
@@ -108,6 +162,10 @@ module peca() difference(){
     }
     for(z=lid_z) furo_tampa(z);
     for(s=ins_s) furo_inserto(s);
+    if(truss){
+        for(i=[0:tr_n-1]) rasgo(tri(i));
+        if(tr_tras) rasgo(tri_em(tr_ty0, tr_ty1, true));
+    }
 }
 
 // print_ready: deita de lado, o perfil do L no plano do leito. Com bico a
