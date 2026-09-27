@@ -125,6 +125,41 @@ Cantos em **R3**, nunca vivos — canto vivo é iniciador de trinca em peça imp
 Os rasgos atravessam a espessura, que é a direção de construção: saem como furos
 verticais na impressão, sem ponte e sem suporte.
 
+### A bolsa da porca
+
+| | |
+|---|---|
+| Porca M4 DIN 934 | 7,00 entre faces × 3,20 |
+| Bolsa | **7,45 × 3,55** — folga 0,45 / 0,35 |
+| Profundidade | pelo **entre vértices** (8,53), não pelo entre faces |
+| Teto | chanfro a 45° fechando até 1,4 mm, com 2,16 mm de material acima |
+
+Três coisas não óbvias, todas pela orientação de impressão:
+
+- **A folga de 0,20 que eu tinha posto não passa.** Rasgo pequeno imprime 0,1 a 0,2
+  subdimensionado em FDM, então a folga real cairia para zero. 0,45 é o mínimo
+  seguro, e mesmo assim a porca só gira 19° antes do vértice travar na parede.
+- **A profundidade é ditada pelo entre vértices.** As faces da porca apoiam nas
+  paredes de 7,45; o que aponta para o fundo é um **vértice**.
+- **O teto da bolsa é chanfrado, não plano.** Deitada, a bolsa abre para o leito e
+  fecha lá em cima: teto plano de 3,55 seria ponte, e com a ventoinha em zero — que
+  o ASA exige — não há como resfriar. O chanfro a 45° fecha sozinho.
+
+O arquivo confere e imprime `*** TETO FINO ***` se alguém mexer nas cotas e deixar
+menos de 2 mm de material acima do ápice.
+
+### Teardrop, e só nos furos de passagem
+
+Deitada, a peça tem dois tipos de furo **horizontal**: os Ø4,5 de passagem e os
+Ø5,60 dos insertos. Furo horizontal fecha com ponte e sai achatado.
+
+- **Ø4,5 de passagem: teardrop.** Sai de graça — o parafuso não se importa com a
+  forma, e tira a barriga que poderia prendê-lo. Ápice a r·√2, flancos a 45°.
+- **Ø5,60 dos insertos: ficam redondos.** O `cupom_horizontal.stl` existe justamente
+  para medir quanto a ponte fecha esse furo; mudar a forma agora invalidaria a
+  medição. E o teardrop tira exatamente o plástico que o serrilhado do inserto
+  precisa para morder.
+
 **Porca aprisionada e não inserto:** o furo da tampa é Ø7,5 e o parafuso vem de dentro
 da caixa. A parede que sobraria em volta de um inserto de latão nesse diâmetro não
 aguenta a prensagem.

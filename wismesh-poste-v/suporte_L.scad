@@ -87,8 +87,26 @@ ins_ch   = 0.60;
 // Porca M4 aprisionada: o parafuso vem de DENTRO da caixa, sobe pelo furo
 // Ø7,5 da tampa e rosca na porca. Inserto nao serve — a parede que sobraria
 // em volta dele num furo de 7,5 nao aguenta a prensagem.
-nut_af   = 7.20;
-nut_t    = 3.40;
+// Cotas NOMINAIS da porca (DIN 934) e a folga, separadas — antes estavam
+// somadas e nao dava para ver quanta folga havia. Eram 7,20 e 3,40, ou seja
+// 0,20 em cada cota, e isso NAO passa em FDM: rasgo pequeno imprime 0,1 a 0,2
+// subdimensionado, entao a folga real cairia para zero ou negativa.
+nut_af_n = 7.00;               // entre faces, norma
+nut_t_n  = 3.20;               // espessura, norma
+nut_fol  = 0.45;               // folga entre faces
+nut_folt = 0.35;               // folga na espessura
+nut_af   = nut_af_n + nut_fol; // 7,45
+nut_t    = nut_t_n  + nut_folt;// 3,55
+// Entre VERTICES. E' esta a cota que manda na profundidade da bolsa: as faces
+// da porca apoiam nas paredes de 7,2 em z, entao o que aponta para o fundo
+// (-x) e' um vertice, nao uma face.
+nut_e    = nut_af_n*2/sqrt(3) + nut_fol;
+// Teto que sobra depois do chanfro. A bolsa e' aberta na face +x, que e' a que
+// deita no leito: o fundo dela aponta para o TOPO da impressao. Teto plano de
+// 3,4 mm sai em ponte e barriga -- com a ventoinha em zero, que o ASA exige,
+// nao ha' como resfriar. O chanfro a 45 graus fecha ate' sobrar nut_cap, que a
+// parede atravessa sem cair.
+nut_cap  = 1.40;
 
 print_ready = true;
 $fn = 48;
@@ -109,6 +127,13 @@ if(truss) for(sv=ins_s) let(yi = lid_y + sv*cos(ang), y0i = yi-2.9-9*sin(ang), y
         ((y1i>tr_y0-2 && y0i<tr_y1+2) || (tr_tras && y1i>tr_ty0-2 && y0i<tr_ty1+2))
         ? "*** COLIDE COM RASGO ***" : "livre, ok"));
 if(truss && tr_tras) echo(str("  vao traseiro: y ",tr_ty0," a ",tr_ty1));
+// CONFERENCIA: o chanfro do teto da bolsa come material no topo da impressao
+echo(str("  porca: bolsa ",nut_af," x ",nut_t," para porca ",nut_af_n," x ",nut_t_n,
+    "  -> folga ",nut_fol," / ",nut_folt));
+echo(str("  bolsa: fundo x=",-nut_e/2,", apice x=",
+    -nut_e/2-(nut_t-nut_cap)/2,", sobra ",
+    wid/2-nut_e/2-(nut_t-nut_cap)/2," mm de material acima",
+    (wid/2-nut_e/2-(nut_t-nut_cap)/2 < 2.0) ? "  *** TETO FINO ***" : ""));
 for(s=ins_s) echo(str("  inserto a ",s," da aresta -> (y ",lid_y+s*cos(ang),", z ",-s*sin(ang),")"));
 
 // perfis no plano YZ, extrudados ao longo de X
@@ -133,11 +158,31 @@ module extrudaYZ(P, w)
     translate([-w/2,0,0]) rotate([0,90,0]) linear_extrude(w)
         polygon([ for(p=P) [-p[1], p[0]] ]);
 
+// Teardrop: circulo com apice a r*raiz(2), flancos a 45 graus, auto-suportado.
+// Vale SO' para os furos de passagem. Os dos insertos ficam redondos ate' o
+// cupom dizer quanto a ponte fecha — mudar a forma agora invalidaria a medicao,
+// e o teardrop tira justamente o plastico que o serrilhado do inserto precisa.
+module teardrop2d(d){
+    hull(){ circle(d=d); translate([-d/2*sqrt(2), 0]) circle(r=0.01); }
+}
+
 module furo_tampa(z0){
-    translate([0, lid_y-1, z0]) rotate([-90,0,0]) cylinder(h=leg_t+2, d=lid_d);
+    // apice para -x, que e' o TOPO na orientacao de impressao
+    translate([0, lid_y-1, z0]) rotate([-90,0,0])
+        linear_extrude(leg_t+2) teardrop2d(lid_d);
     // bolsa da porca, aberta na face +X
-    translate([-nut_af/2, lid_y+leg_t-nut_t-2.0, z0-nut_af/2])
-        cube([wid/2+nut_af/2+0.2, nut_t, nut_af]);
+    y0 = lid_y+leg_t-nut_t-2.0;
+    x0 = -nut_e/2;                      // fundo: cabe o VERTICE da porca
+                                        // (nut_e JA inclui a folga — somar
+                                        //  nut_fol de novo afinava o teto)
+    ch = (nut_t - nut_cap)/2;           // chanfro a 45: recuo = altura
+    translate([x0, y0, z0-nut_af/2])
+        cube([wid/2 - x0 + 0.2, nut_t, nut_af]);
+    // teto a 45 graus sobre o fundo da bolsa
+    translate([x0, y0, z0-nut_af/2]) hull(){
+        cube([0.01, nut_t, nut_af]);
+        translate([-ch, ch, 0]) cube([0.01, nut_cap, nut_af]);
+    }
 }
 
 module furo_inserto(s){
