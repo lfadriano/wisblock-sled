@@ -58,6 +58,12 @@ O tubo entra por baixo e **o rebordo encosta no teto**:
    **160 mm²** de coroa, 0,09 MPa com o peso montado — não flui nem a 60 °C.
 3. **Montagem.** A altura sai sozinha: enfie até bater.
 
+> **O corte do furo comeca em `plate_z0`, nao em `body_z0`.** A espinha e a placa
+> descem 4 mm alem do corpo; cortando so' a partir do corpo, sobravam **3 mm
+> entupindo a boca** do alojamento e o tubo nao entrava. Conferido por intersecao
+> com um cilindro Ø31,7: as faixas de entrada e de trabalho dao vazio, e o unico
+> contato que resta e' o plano z = −6 — que e' o batente.
+
 O passante M5 deixa de segurar peso e passa a cuidar só de **rotação e arranque**.
 O arranque é real: a 40 m/s a chapa inclinada gera ~45 N de sustentação contra 15 N
 de peso, sobrando 30 N puxando para cima. Ele fica **no plano de partição**, meia

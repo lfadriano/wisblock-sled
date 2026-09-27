@@ -84,25 +84,30 @@ module meio_espaco()  // mantem so' o lado desta metade
 
 module corpo(){
     intersection(){
-        union(){
-            // casca com teto
-            translate([0,0,body_z0]) difference(){
-                cylinder(h=-body_z0, d=body_d);
-                translate([0,0,-1]) cylinder(h=-body_z0-cap_t+1, d=bore_d);
-                // chanfro de entrada do tubo
-                translate([0,0,-0.01]) cylinder(h=2.5, d1=bore_d+3, d2=bore_d);
+        // ORDEM IMPORTA: soma corpo + orelhas + espinha + placa e SO' ENTAO
+        // corta o furo do poste. Cortando antes, a espinha (que vai de y=1 a
+        // y=24, e o furo so' alcanca y=15,95) reentupia a meia-lua desta
+        // metade e o tubo nao entrava.
+        difference(){
+            union(){
+                translate([0,0,body_z0]) cylinder(h=-body_z0, d=body_d);
+                for(z=ear_z, xr=ear_x)
+                    translate([xr[0], s>0 ? y0 : -y0-ear_t, z])
+                        cube([xr[1]-xr[0], ear_t, ear_h]);
+                if(half==0){
+                    translate([-spine_w/2, spine_y0, plate_z0])
+                        cube([spine_w, plate_y0-spine_y0+0.01, -plate_z0]);
+                    translate([-plate_w/2, plate_y0, plate_z0])
+                        cube([plate_w, plate_t, -plate_z0]);
+                }
             }
-            // orelhas
-            for(z=ear_z, xr=ear_x)
-                translate([xr[0], s>0 ? y0 : -y0-ear_t, z])
-                    cube([xr[1]-xr[0], ear_t, ear_h]);
-            // espinha + placa, so' na metade 0
-            if(half==0){
-                translate([-spine_w/2, spine_y0, plate_z0])
-                    cube([spine_w, plate_y0-spine_y0+0.01, -plate_z0]);
-                translate([-plate_w/2, plate_y0, plate_z0])
-                    cube([plate_w, plate_t, -plate_z0]);
-            }
+            // Alojamento CEGO do poste: teto em z = -cap_t.
+            // O corte comeca em plate_z0, e nao em body_z0: a espinha e a
+            // placa descem 4 mm ALEM do corpo, e cortando so' a partir do
+            // corpo sobravam 3 mm entupindo a boca do alojamento.
+            translate([0,0,plate_z0-1]) cylinder(h=-plate_z0-cap_t+1, d=bore_d);
+            // chanfro de entrada, na boca de baixo
+            translate([0,0,plate_z0-0.01]) cylinder(h=2.5, d1=bore_d+3, d2=bore_d);
         }
         meio_espaco();
     }
