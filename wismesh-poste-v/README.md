@@ -95,6 +95,10 @@ Cordão de silicone na junta de cima, onde o tubo encontra o berço: a folga anu
 
 ### A treliça
 
+Ela **fica mais rígida que a peça maciça** abaixo de ~32% de preenchimento — os
+perímetros dos furos densificam o banzo, que é a fibra extrema. Aos 20% do perfil
+estrutural o ganho é de **+8%**. Aos 30% empata.
+
 ![suporte](p_sup.png)
 
 A alma de uma viga em balanço carrega pouca flexão — a tensão é máxima nas fibras
@@ -104,9 +108,16 @@ extremas e **zero na linha neutra**. Tirar material do meio custa quase nada:
 |---|---|---|
 | Tensão máxima | 0,65 MPa | **0,89 MPa** |
 | Cisalhamento na alma | 0,049 MPa | 0,14 MPa |
-| Volume | 90 112 mm³ | 82 021 mm³ (−9%) |
+| Volume **de modelo** | 90 112 mm³ | 82 021 mm³ (−9%) |
+| Material **depositado** | — | **+1,2 cm³** |
 
 Contra ~25 MPa do ASA a 60 °C: **fator 28 de folga**.
+
+> **A treliça não economiza filamento — ela gasta mais.** Os −9% são volume de
+> modelo. O que sai de lá estava a 36% de densidade e valia ~4,0 cm³ de material;
+> os quatro furos acrescentam **5,2 cm³** de anel de perímetro novo. Saldo: **+1,2 cm³**.
+> É a mesma densificação do banzo que aparece como ganho de rigidez, vista pelo
+> outro lado. Ela se paga em **rigidez e estética**, não em material nem em tempo.
 
 **Não é pelo vento.** A silhueta do suporte inteiro dá 6 N a 40 m/s, então vazar
 metade economiza 3 N contra os 50 N da chapa — e ele fica na esteira dela. É por
