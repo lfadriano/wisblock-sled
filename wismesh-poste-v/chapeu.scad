@@ -41,8 +41,14 @@ folga    =  15.0;   // altura livre sobre a caixa: e' a chamine
 pe_d     =  10.0;   // pes de colagem
 pe_pos   = [45.0, 22.0];   // (+-x, +-y) medidos do centro da FACE DE CIMA,
                            // para os pes assentarem sobre ela
-gr_w     =   0.9;   // ranhura de colagem (mesma razao do wismesh-foot:
-gr_d     =   0.9;   // 0,9 da ~39% de contato e 46% de ranhura)
+// Ranhura de ancoragem na face de colagem. Aqui o pe e' pequeno e leva um
+// anel so', entao a proporcao NAO e' a do wismesh-foot: da 80% de contato
+// direto e 20% de ranhura (15,6 mm2 de sulco em 78,5). E' o suficiente —
+// a junta trabalha a 0,051 MPa com vento de 40 m/s, contra 1 a 3 MPa que
+// um PU bem preparado entrega. O anel esta' aqui como trava mecanica
+// contra descolamento de borda, nao por area.
+gr_w     =   0.9;
+gr_d     =   0.9;
 
 ant_y    =  12.0;   // posicao da antena, medida do fundo da face de cima
                     // (o mais perto possivel do poste: o bulkhead pede
