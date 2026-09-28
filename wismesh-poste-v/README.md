@@ -46,6 +46,7 @@ O 90 × 90 e a tampa de 102,6 são paquímetro.
 | Pega | **110 mm** nas duas metades |
 | Placa de fixação | 116 × 110 × 10, **cantos R5**, gabarito 93 × 74, Ø4,5 |
 | Material além do furo | 9,25 mm |
+| Orelhas | ponta 16 mm, **raiz alargada para 24**, cantos **R4** |
 | Fechamento | 4 × M5 × 40 + nyloc |
 | Passante no poste | Ø5,2, no plano de partição |
 
