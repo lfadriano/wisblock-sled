@@ -1,38 +1,68 @@
 # LoRa Node Enclosures
 
-Carriers and accessories for outdoor LoRa nodes, all parametric OpenSCAD:
+**Two nodes**, both parametric OpenSCAD, both for continuous unattended operation
+outdoors in **Manaus (3.1° S)**. They share the radio — RAK WisBlock — and almost
+nothing else. One puts it in a bought sealed box under a bought antenna; the other
+puts everything, antenna included, inside a length of PVC pipe.
 
-- **[Baton Node](#lora-baton-node--40-mm-pvc)** (this page) — tubular node inside a
-  40 mm PVC pipe.
-- **[WisMesh 1W Grid Tray](wismesh-grid/)** — gridded tray for the WisMesh 1 Watt
-  Booster (RAK19007 + RAK3400 + RAK13302) and two 18650 cells inside a Rohdbox
-  110×110×60 IP68 box. Includes the **6-hole drilling pattern** for the assembly,
-  which is not published as a single reference anywhere.
-- **[WisMesh Foot](wismesh-foot/)** — a single PU-glued standoff, as a lighter
-  alternative to the tray: glue six of them straight onto the orange plate and
-  place the assembly wherever you like.
-- **[SMA Hood](sma-hood/)** — a PU-glued hood that carries the panel-mount SMA
-  connector to a **45° face** on the outside of a sealed box, in three sizes. Fully
-  closed, no screws, no side openings: a grooved skirt does the holding and the
-  sealing.
-- **[PU Rail](pu-rail/)** — a PU-glued spacer rail that sits between a sealed box and
-  an aluminium plate: glued on one face, M4 heat-set inserts on the other, and
-  dovetailed channels that key the adhesive instead of merely venting it.
-- **[WisMesh Pole Mount · box upright](wismesh-poste-v/)** — the arrangement that
-  actually got built: the enclosure stands **beside** the pole's top end, antenna
-  straight up off its upper face, solar plate cantilevered as a **15° awning** off the
-  front. A blind-bore cradle caps the 6 m tube and turns friction into a seat; a
-  light-coloured **printed hat** shades the top face (the hottest of all at 3° from
-  the equator) without putting metal near the antenna.
-- **[WisMesh Pole Mount](wismesh-poste/)** — the whole node on top of a 31.7 mm steel
-  pole: a two-piece pole cradle that also caps the tube, and a pair of **wedge rails**
-  that tilt the solar plate 15° while the box stays level, so the antenna rises
-  vertically. Built around the enclosure's **two different hole patterns**, 93 × 74 on
-  the base and 90 × 90 on the lid, both outside the gasket.
+| | Antenna | Enclosure | Status |
+|---|---|---|---|
+| **1 · Pole node** | bought, SMA, 14 cm | Rohdbox 110×110×60 IP68 | **being built** |
+| **2 · Baton node** | DIY collinear, **inside the tube** | 40 mm PVC pipe | **paused** |
 
 ---
 
-# LoRa "Baton Node" — 40 mm PVC
+## 1 · Sealed box + off-the-shelf antenna — *being built*
+
+WisMesh 1 Watt Booster (RAK19007 + RAK3400 + RAK13302) and two 18650 cells inside a
+**Rohdbox 110×110×60 IP68** enclosure, standing beside the top of a **6 m guyed steel
+pole (Ø31.7 × 1.7)**, with **two 5 V panels** glued to a bare aluminium plate tilted
+15°, and a **14 cm SMA antenna** screwed straight into the enclosure's upper face.
+
+The antenna is bought and short. That single fact decides the architecture: at
+40 g it hangs safely off the SMA bulkhead, so nothing has to clamp it to the pole,
+and the enclosure can carry everything.
+
+| Part | What it is |
+|---|---|
+| **[Pole mount · box upright](wismesh-poste-v/)** | **the one being built.** Cradle with a blind bore that caps the 6 m tube and turns friction into a seat, a trussed L bracket that cantilevers the solar plate as a 15° awning, and a light-coloured printed hat that shades the hottest face without putting metal near the antenna |
+| [Pole mount · box on top](wismesh-poste/) | *superseded.* Box lying on the pole's top end with wedge rails on the lid. Abandoned when the antenna moved to the enclosure's upper face |
+| [Grid tray](wismesh-grid/) | gridded tray for the WisMesh assembly and a 2×18650 pack inside the box. Carries the **6-hole drilling pattern**, which is not published as a single reference anywhere |
+| [Foot](wismesh-foot/) | a single PU-glued standoff, as a lighter alternative to the tray: glue six of them straight onto the orange plate |
+
+Two measured facts this project rests on, both worth reusing:
+
+- **The enclosure has two different hole patterns, both outside the gasket** —
+  **93 × 74** on the base and **90 × 90** on the lid. Each fixes a different thing.
+- **At 3° from the equator the tilt is decided by cleaning, not by geometry.**
+  15° costs 1.9% of the annual average and *gains* 1.8% on the worst month; below
+  10° the dust settles and, in Manaus, the moss takes hold.
+
+## 2 · Everything inside a PVC pipe, DIY antenna — *paused*
+
+The whole node — board, cell, and a **collinear antenna to be built** — inside a
+sealed **40 mm PVC pipe**. Nothing protrudes: no bulkhead, no external antenna, no
+bracket. A printed sled slides in and carries it all.
+
+What exists today is the sled, finished and printed: **[Baton Node](#2--lora-baton-node--40-mm-pvc)**
+(documented in full below), with the antenna still external, on an SMA in the top
+cap. **Paused at the point where the antenna moves inside the tube** — that is the
+part still to be designed.
+
+## Accessories — not tied to either node
+
+| Part | What it is |
+|---|---|
+| [SMA Hood](sma-hood/) | a PU-glued hood that carries a panel-mount SMA to a **45° face** on the outside of a sealed box, in three sizes. Fully closed, no screws: a grooved skirt does the holding and the sealing |
+| [PU Rail](pu-rail/) | a PU-glued spacer rail between a sealed box and an aluminium plate: glued on one face, M4 heat-set inserts on the other, and **dovetailed** channels that key the adhesive instead of merely venting it. Its insert coupon is the vertical-hole one; the pole node uses a [horizontal-hole coupon](wismesh-poste-v/) instead |
+
+---
+
+# 2 · LoRa "Baton Node" — 40 mm PVC
+
+> This is project 2 above, in its current state: the sled is done and printed, the
+> antenna is still external. Moving the antenna inside the tube is what is paused.
+
 
 This repository documents the construction of a tubular ("baton" style) LoRa
 repeater node, designed for continuous, autonomous outdoor operation under severe
