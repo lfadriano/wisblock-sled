@@ -67,7 +67,11 @@ spine_w  = 44.0;     // espinha que liga a placa ao corpo
 spine_y0 =  1.0;
 
 // ---------------- orelhas de aperto ----------------
-ear_x    = [[10,40],[-40,-10]];
+// [RAIZ, PONTA] — nesta ordem, sempre. A raiz e' o valor de menor |x|, e e' nela
+// que o alargamento entra. Antes a lista era [[10,40],[-40,-10]], com a raiz no
+// segundo valor da orelha de -x: ela alargava na PONTA, ficava de fora do corpo
+// e as duas saiam assimetricas.
+ear_x    = [[10,40],[-10,-40]];
 ear_t    = 12.0;
 ear_h    = 16.0;     // altura na ponta livre
 // A orelha e' o ponto mais solicitado da peca: o aperto do M5 a flexiona com a
@@ -76,7 +80,8 @@ ear_h    = 16.0;     // altura na ponta livre
 // sem mexer na ponta nem no furo. O contorno cai no plano da camada, entao
 // arredondar e alargar nao custam suporte nem ponte.
 ear_fl   = 12.0;     // meia-altura na raiz (24 no total)
-ear_fx   = 22.0;     // ate' onde o alargamento vai
+ear_flen = 12.0;     // COMPRIMENTO do alargamento a partir da raiz (era uma
+                     // posicao absoluta em x, que nao espelhava)
 ear_r    =  4.0;     // raio dos cantos
 ear_z    = [-32.0, -82.0];
 ear_d    = 5.50;     // M5
@@ -109,10 +114,13 @@ echo(str("apoio do rebordo do tubo: ",3.1416/4*(pole_d*pole_d-(pole_d-2*1.7)*(po
 
 // perfil da orelha no plano XZ (que e' o plano da CAMADA na impressao):
 // alargada na raiz, reta na ponta, cantos arredondados.
-module orelha2d(x0, x1)
+module orelha2d(xr, xf){
+    d  = (xf > xr) ? 1 : -1;      // direcao da raiz para a ponta
+    xm = xr + d*ear_flen;         // onde o alargamento termina
     offset(r=ear_r) offset(delta=-ear_r)
-        polygon([[x0, ear_fl], [ear_fx*sign(x1), ear_h/2], [x1, ear_h/2],
-                 [x1, -ear_h/2], [ear_fx*sign(x1), -ear_h/2], [x0, -ear_fl]]);
+        polygon([[xr, ear_fl], [xm, ear_h/2], [xf, ear_h/2],
+                 [xf, -ear_h/2], [xm, -ear_h/2], [xr, -ear_fl]]);
+}
 
 module orelha(x0, x1, z0, lado)
     translate([0, lado>0 ? y0 : -y0-ear_t, z0+ear_h/2]) rotate([-90,0,0])
