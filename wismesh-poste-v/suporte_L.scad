@@ -46,6 +46,16 @@ arm_d1   = 22.0;              // altura da secao na ponta (era 15: com a trelica
 gusset   = 38.0;               // misula no canto interno do L
 cham     = 0.4;
 
+// ---------------- cantos arredondados ----------------
+// Arredonda a SILHUETA do L (o perfil no plano YZ), que e' o contorno que
+// aparece deitado na mesa. NAO toca a face de apoio em y = lid_y: e' ela que
+// encosta na tampa da caixa, e canto redondo ali tira contato exatamente onde
+// o parafuso aperta. A faixa de largura rnd colada nessa face volta inteira,
+// entao os dois cantos de la' continuam vivos e a face segue com 117 mm.
+// Os cantos internos (perna/braco, perna/misula) tambem ficam vivos: crescer
+// com juncao redonda so' arredonda o que e' convexo.
+rnd      = 4.0;
+
 // ---------------- alivio em trelica ----------------
 // A alma de uma viga em balanco carrega pouca flexao: a tensao e' maxima
 // nas fibras extremas e ZERO na linha neutra. Tirar material do meio custa
@@ -154,9 +164,21 @@ function tri_em(ya, yb, cima) = let(a=ya+tr_diag/2, c=yb-tr_diag/2, m=(ya+yb)/2)
          : [[a, wt(a)], [c, wt(c)], [m, wb(m)]];
 function tri(i) = tri_em(bay(i)[0], bay(i)[1], i%2==1);
 
-module extrudaYZ(P, w)
-    translate([-w/2,0,0]) rotate([0,90,0]) linear_extrude(w)
-        polygon([ for(p=P) [-p[1], p[0]] ]);
+// o perfil e' desenhado em (y,z) e mapeado para o plano do extrude por
+// [y,z] -> [-z, y]
+module poly2d(P) polygon([ for(p=P) [-p[1], p[0]] ]);
+
+// UNIR antes de arredondar: se cada pedaco fosse arredondado sozinho, os
+// encontros perna/braco/misula virariam degrau em vez de canto inteiro.
+module perfil2d() union(){ poly2d(PERNA); poly2d(BRACO); poly2d(MISULA); }
+
+module perfil2d_arred() union(){
+    offset(r=rnd) offset(delta=-rnd) perfil2d();
+    translate([-leg_z1, lid_y]) square([leg_z1-leg_z0, rnd]);   // face de apoio
+}
+
+module corpo(w)
+    translate([-w/2,0,0]) rotate([0,90,0]) linear_extrude(w) perfil2d_arred();
 
 // Teardrop: circulo com apice a r*raiz(2), flancos a 45 graus, auto-suportado.
 // Vale SO' para os furos de passagem. Os dos insertos ficam redondos ate' o
@@ -200,11 +222,7 @@ module rasgo(P)
             polygon([ for(p=P) [-p[1], p[0]] ]);
 
 module peca() difference(){
-    union(){
-        extrudaYZ(PERNA,  wid);
-        extrudaYZ(BRACO,  wid);
-        extrudaYZ(MISULA, wid);
-    }
+    corpo(wid);
     for(z=lid_z) furo_tampa(z);
     for(s=ins_s) furo_inserto(s);
     if(truss){
