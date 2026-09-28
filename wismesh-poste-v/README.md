@@ -10,6 +10,8 @@ os dois painéis solares vira uma **aba a 15°** na face frontal.
 
 **Três peças impressas.** A chapa e os painéis são compra e usinagem manual.
 
+![explodido](p_exp.png)
+
 ```
    berço (2 metades)  →  poste  →  caixa  →  suporte em L (2)  →  chapa  →  painéis
                                       ↑
@@ -47,7 +49,7 @@ O 90 × 90 e a tampa de 102,6 são paquímetro.
 | Placa de fixação | 116 × 110 × 10, **cantos R5**, gabarito 93 × 74, Ø4,5 |
 | Material além do furo | 9,25 mm |
 | Orelhas | ponta 16 mm, **raiz alargada para 24**, cantos **R4** |
-| Fechamento | 4 × M5 × 40 + nyloc |
+| Fechamento | 4 × **M5 × 35** + nyloc (35 e não 40 — ver *Ferragem*) |
 | Passante no poste | Ø5,2, no plano de partição |
 
 ## O alojamento é cego, e isso resolve três coisas
@@ -254,9 +256,8 @@ chapéu até ~41° de altura solar.
 | Suportes | 4 × Ø4,5, alinhados com os insertos (45 e 150 ao longo da rampa) |
 | Painéis | 2 janelas p/ as caixinhas de junção + 8 alívios das cabeças salientes |
 
-**Use inox A2 em todo o conjunto.** Não é só corrosão: 4 × M4 de aço carbono conduzem
-**1,51 W** para a caixa contra **0,48 W** do inox — 37 vezes a radiação da chapa nua.
-É o item térmico número um.
+**Use inox A2 em todo o conjunto** — o porquê está em [Ferragem](#ferragem), e não é
+corrosão: é calor.
 
 ## Os 15°
 
@@ -361,18 +362,83 @@ Imprima com o **mesmo material, mesma camada e mesmo perfil** do suporte.
 > arruela 1,0). O furo tem 9,0 e um M4 × 10 encostaria no fundo, empurrando o inserto
 > para fora — e você condenaria um furo bom.
 
+---
+
+# Ferragem
+
+Contada peça por peça, com o número que aparece na vista explodida lá em cima.
+**Tudo inox A2.** Não é só corrosão: 4 × M4 de aço carbono conduzem **1,51 W**
+para dentro da caixa contra **0,48 W** do inox — 37 vezes a radiação da chapa nua,
+e o item térmico número um do projeto.
+
+| # | Onde | Parafuso | Arruelas | Porca / inserto |
+|---|---|---|---|---|
+| **1** | orelhas do berço — fecha as duas metades no poste | **4 × M5 × 35** sextavado DIN 933, rosca inteira | 8 × **grande M5 Ø15** DIN 9021 | 4 × **nyloc M5** DIN 985 |
+| **2** | passante que atravessa berço **e** poste furado | **1 × M5 × 55** rosca inteira | 2 × grande M5 Ø15 | 1 × nyloc M5 |
+| **3** | caixa → placa do berço, gabarito 93 × 74 | **4 × M4 × 20** | 8 × **M4 Ø9** DIN 125 | 4 × **nyloc M4** |
+| **4** | tampa → suporte em L, por dentro da caixa | **4 × M4 × 16** *(confira a tampa)* | 4 × **grande M4 Ø12** DIN 9021 | — rosca na (5) |
+| **5** | bolsa lateral do suporte em L | — | — | 4 × **porca M4 DIN 934** (7,0 × 3,2) |
+| **6** | face da rampa do suporte em L | — | — | 4 × **inserto latão M4 8 × 6** |
+| **7** | chapa de alumínio → insertos (6) | **4 × M4 × 12** | 4 × M4 Ø9 | trava química (Loctite 243) |
+
+### Lista de compra, somada
+
+| Qtd | Item |
+|---|---|
+| 4 | parafuso M5 × 35 inox A2, sextavado, rosca inteira |
+| 1 | parafuso M5 × 55 inox A2, rosca inteira |
+| 4 | parafuso M4 × 20 inox A2 |
+| 4 | parafuso M4 × 16 inox A2 — **medir a tampa antes** |
+| 4 | parafuso M4 × 12 inox A2 |
+| 5 | porca nyloc M5 (DIN 985) inox A2 |
+| 4 | porca nyloc M4 (DIN 985) inox A2 |
+| 4 | porca M4 sextavada comum (DIN 934) inox A2 |
+| 10 | arruela grande M5 Ø15 (DIN 9021) inox A2 |
+| 4 | arruela grande M4 Ø12 (DIN 9021) inox A2 |
+| 12 | arruela lisa M4 Ø9 (DIN 125) inox A2 |
+| 4 | inserto de latão M4 8 × 6 (assentar a quente) |
+
+### Quatro coisas que não são óbvias
+
+**(1) É M5 × 35, não 40 — e a cabeça vai no lado da placa.** As quatro orelhas ficam
+**atrás da placa de fixação**, num bolsão de só **11 mm** (face da orelha em y = 13,
+costas da placa em y = 24). A pilha é 1 (arruela) + 12 + 2 de folga + 12 + 1 + 5 da
+nyloc = **33 mm**: um M5 × 40 sobraria 7 mm e **bateria na placa** antes de apertar.
+Ponha a **cabeça** no bolsão e a porca do lado de fora — assim a sobra fica na parte
+livre. Para segurar a cabeça entra uma **chave fina de 8 mm pela lateral**: há 30 mm
+de acesso em x e os 11 mm de altura.
+
+**(2) O comprimento do (4) depende da tampa, que eu não medi.** O parafuso precisa
+**alcançar** a porca aprisionada (12 mm dentro do suporte) e **não** passar dos 14 mm,
+senão toca o fundo cego e nunca aperta. Regra: `L = espessura da tampa + 13`,
+arredondando para cima, com teto em `+15`. Tampa de 3 mm → **M4 × 16**. Se der um
+valor fora da escala comercial, ajuste com uma arruela a mais.
+
+**(3) A arruela do (4) é grande.** O furo da tampa é **Ø7,5** e uma DIN 125 M4 tem
+Ø9: sobrariam 0,75 mm de encosto de cada lado. A DIN 9021 Ø12 resolve.
+
+**(4) Aperto.** Quem segura o conjunto em Z é o **batente do tubo no teto do berço**,
+não o atrito das orelhas — então não force. **M5 a ~2 N·m, M4 a ~1,2 N·m.** As
+arruelas grandes existem por isso: ASA flui sob pressão local, e uma DIN 125 M5
+concentra o aperto em 55 mm² contra 153 mm² da Ø15.
+
+> A arruela do (2) assenta numa superfície **curva** — o corpo Ø43,9 do berço. Ela
+> balança 0,58 mm sobre a corda de Ø15 e crava no plástico ao apertar. É esperado, e
+> esse parafuso trabalha leve: quem segura o peso é o batente.
+
 ## Ordem de montagem
 
-1. Assentar os insertos nos suportes (**furo validado no cupom** do `pu-rail`)
+1. Assentar os insertos **(6)** nos suportes — furo validado no `cupom_horizontal`
 2. Colar os painéis na chapa com silicone de **cura neutra** (nunca acético)
 3. Bulkhead SMA na face superior, a 12 mm da borda de trás
 4. Colar o chapéu com PU nos 4 pés
-5. Parafusar os suportes na tampa: M4 **por dentro da caixa**, subindo pelo furo Ø7,5
-   até a porca aprisionada
-6. Parafusar a chapa nos insertos (4 × M4 × 12 inox A2)
+5. Pôr as porcas **(5)** nas bolsas dos suportes e parafusar na tampa com **(4)**,
+   **por dentro da caixa**, subindo pelo furo Ø7,5 — depois de montado não dá para
+   enfiar a porca
+6. Parafusar a chapa nos insertos com **(7)**
 7. No poste: enfiar as duas metades do berço **até o tubo bater no teto**, furar o
-   tubo, cravar o M5 passante, fechar com os 4 × M5 × 40
-8. Parafusar a caixa na placa do berço (4 × M4, cabeça por dentro da caixa)
+   tubo com o próprio berço de gabarito, cravar o passante **(2)**, fechar com **(1)**
+8. Parafusar a caixa na placa do berço com **(3)**, cabeça por dentro da caixa
 9. Ligar os dois painéis **em paralelo**, com um Schottky em cada perna
 
 ## Gerar
@@ -382,7 +448,20 @@ openscad -D half=0 -o berco_0.stl   berco_vertical.scad
 openscad -D half=1 -o berco_1.stl   berco_vertical.scad
 openscad            -o suporte_L.stl suporte_L.scad
 openscad            -o chapeu.stl    chapeu.scad
+
+# vista explodida: precisa dos STL na posicao MONTADA
+openscad -D half=0 -D print_ready=false -o _ber_m0.stl berco_vertical.scad
+openscad -D half=1 -D print_ready=false -o _ber_m1.stl berco_vertical.scad
+openscad -D print_ready=false -o _sup_m.stl suporte_L.scad
+openscad -D print_ready=false -o _cha_m.stl chapeu.scad
+openscad -o /tmp/exp.png explodido.scad --imgsize=2600,1950 --projection=p \
+         --camera=1120,-1450,820,0,200,-35 --colorscheme=Tomorrow
+python3 legenda_exp.py /tmp/exp.png      # recorta e cola a legenda -> p_exp.png
 ```
+
+> As etiquetas de `explodido.scad` encaram a câmera por construção: a matriz sai de
+> `EYE`/`CEN` do próprio arquivo. Se mudar o `--camera`, mude também essas duas
+> constantes — senão os números saem tortos.
 
 | Parâmetro | Peça | Notas |
 |---|---|---|
