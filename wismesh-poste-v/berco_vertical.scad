@@ -44,7 +44,11 @@ print_ready = true;
 pole_d   = 31.70;    // MEDIDO
 pole_fit = 0.20;
 wall     = 6.00;
-body_z0  = -106.0;   // o corpo vai de -106 ate' 0
+// O corpo desce ate' o MESMO nivel da placa. Antes ele parava em -106 enquanto
+// a espinha e a placa iam a -110, e como o furo do poste e' cortado atraves
+// delas, a metade com placa ficava com 104 mm de canal contra 100 da outra —
+// meia-lua visivelmente mais curta numa das duas.
+body_z0  = -110.0;   // = plate_z0
 cap_t    = 6.00;     // teto do alojamento: tampa a boca do tubo
 
 // ---------------- particao ----------------
@@ -58,6 +62,7 @@ plate_w  = 116.0;    // 116 deixa 9,25 mm de material alem do furo
 plate_y0 = 24.0;
 plate_t  = 10.0;
 plate_z0 = -110.0;
+plate_r  =    5.0;   // raio dos cantos da placa
 spine_w  = 44.0;     // espinha que liga a placa ao corpo
 spine_y0 =  1.0;
 
@@ -85,8 +90,20 @@ s      = (half==0) ? 1 : -1;    // lado que esta metade ocupa
 echo(str("furo do poste Ø",bore_d,"  corpo Ø",body_d,"  pega ",-body_z0," mm"));
 echo(str("teto do alojamento em z=",body_z0+ -body_z0-cap_t == 0 ? 0 : -cap_t,"  (cap de ",cap_t," mm)"));
 echo(str("gabarito da caixa ",box_x," x ",box_z," -> furos em (+-",box_x/2,", ",-55+box_z/2," e ",-55-box_z/2,")"));
-echo(str("placa ",plate_w," x ",-plate_z0," x ",plate_t,"  -> material alem do furo: ",plate_w/2-box_x/2-box_d/2," mm"));
+echo(str("canal do poste: de ",body_z0," a ",-cap_t," = ",-body_z0-cap_t," mm nas DUAS metades"));
+echo(str("placa ",plate_w," x ",-plate_z0," x ",plate_t," cantos R",plate_r,"  -> material alem do furo: ",plate_w/2-box_x/2-box_d/2," mm"));
 echo(str("apoio do rebordo do tubo: ",3.1416/4*(pole_d*pole_d-(pole_d-2*1.7)*(pole_d-2*1.7))," mm2"));
+
+// retangulo de cantos arredondados, exato: hull de 4 circulos.
+// (nao uso par de offset() — ele desloca a cota, medi +2,00 mm com delta)
+module rrect(w, h, r)
+    hull() for(sx=[-1,1], sy=[-1,1])
+        translate([sx*(w/2-r), sy*(h/2-r)]) circle(r=r);
+
+// placa de fixacao da caixa, com os cantos em R5
+module placa()
+    translate([0, plate_y0, 0]) rotate([-90,0,0]) linear_extrude(plate_t)
+        translate([0, -plate_z0/2]) rrect(plate_w, -plate_z0, plate_r);
 
 module meio_espaco()  // mantem so' o lado desta metade
     translate([-200, s>0 ? y0 : -200-y0, -300]) cube([400, 200, 400]);
@@ -106,8 +123,7 @@ module corpo(){
                 if(half==0){
                     translate([-spine_w/2, spine_y0, plate_z0])
                         cube([spine_w, plate_y0-spine_y0+0.01, -plate_z0]);
-                    translate([-plate_w/2, plate_y0, plate_z0])
-                        cube([plate_w, plate_t, -plate_z0]);
+                    placa();
                 }
             }
             // Alojamento CEGO do poste: teto em z = -cap_t.

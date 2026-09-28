@@ -43,8 +43,8 @@ O 90 × 90 e a tampa de 102,6 são paquímetro.
 |---|---|
 | Furo do poste | Ø31,9 (0,2 de folga sobre os 31,7 medidos) |
 | Parede / corpo | 6 mm → Ø43,9 |
-| Pega | 106 mm |
-| Placa de fixação | 116 × 110 × 10, gabarito 93 × 74, Ø4,5 |
+| Pega | **110 mm** nas duas metades |
+| Placa de fixação | 116 × 110 × 10, **cantos R5**, gabarito 93 × 74, Ø4,5 |
 | Material além do furo | 9,25 mm |
 | Fechamento | 4 × M5 × 40 + nyloc |
 | Passante no poste | Ø5,2, no plano de partição |
@@ -57,6 +57,11 @@ O tubo entra por baixo e **o rebordo encosta no teto**:
 2. **Estabilidade em Z.** O conjunto **apoia** em vez de depender de atrito:
    **160 mm²** de coroa, 0,09 MPa com o peso montado — não flui nem a 60 °C.
 3. **Montagem.** A altura sai sozinha: enfie até bater.
+
+> **As duas meias-luas têm o mesmo comprimento.** Não tinham: o corpo parava em
+> −106 enquanto a espinha e a placa iam a −110, e como o furo do poste é cortado
+> **através** delas, a metade com placa ficava com **104 mm** de canal contra **100**
+> da outra. Agora `body_z0 = plate_z0`, e as duas têm 104.
 
 > **O corte do furo comeca em `plate_z0`, nao em `body_z0`.** A espinha e a placa
 > descem 4 mm alem do corpo; cortando so' a partir do corpo, sobravam **3 mm
@@ -300,7 +305,7 @@ Todas cabem na mesa da CP2 (200 × 148):
 | | dimensões |
 |---|---|
 | `berco_0.stl` | 116 × 110 × 33 |
-| `berco_1.stl` | 80 × 106 × 21 |
+| `berco_1.stl` | 80 × **110** × 21 |
 | `suporte_L.stl` | 150 × 117 × 15 |
 | `chapeu.stl` | 140 × 78 × 18 |
 
